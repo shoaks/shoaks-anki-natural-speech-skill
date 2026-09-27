@@ -1,0 +1,38 @@
+{
+  "ID": "example_es_0001",
+  "Target": "Se los voy a devolver la semana que viene.",
+  "EnglishMeaning": "I'm going to return them to you next week.",
+  "Image": "anki_example_es_0001_image.webp",
+  "AudioNatural": "anki_example_es_0001_natural.wav",
+  "AudioCareful": "anki_example_es_0001_careful.wav",
+  "Segmentation": ["Se los", "voy a devolver", "la semana que viene"],
+  "Grammar": [
+    {
+      "form": "se + los",
+      "function": "indirect-object pronoun followed by a direct-object pronoun",
+      "meaning_in_sentence": "to you + them"
+    },
+    {
+      "form": "ir a + infinitive",
+      "function": "planned or near-future construction",
+      "meaning_in_sentence": "am going to return"
+    }
+  ],
+  "Vocabulary": [
+    {
+      "lemma": "devolver",
+      "part_of_speech": "verb",
+      "definition": "to give or take something back to the person or place it came from"
+    }
+  ],
+  "Usage": "A common neutral way to express a planned future action.",
+  "PronunciationNotes": "Use natural connected speech and avoid over-articulating each word boundary.",
+  "SpokenForm": "Se los voy a devolver la semana que viene.",
+  "Example": "Te lo voy a devolver mañana.",
+  "Cloze": "Se los voy a {{c1::devolver}} la semana que viene.",
+  "Tags": ["Spanish::A1", "Grammar::ObjectPronouns", "Grammar::NearFuture", "Source::UserInput"],
+  "Source": "UserInput",
+  "Language": "es",
+  "Difficulty": "basic-intermediate",
+  "ImageMode": "generate"
+}
