@@ -6,8 +6,8 @@ A local-first Codex skill specification for turning user-provided language mater
 - contextual sentence segmentation
 - grammar and vocabulary analysis
 - semantic images
-- native-like conversational TTS generated locally
-- optional careful-pronunciation audio
+- mandatory native-like conversational audio generated locally with Fish Speech
+- optional second careful-pronunciation track
 - recognition, cloze, and production cards
 
 ## Design goal
@@ -21,8 +21,7 @@ The skill therefore uses a speech-planning stage before TTS instead of sending t
 ## Recommended V1
 
 - `genanki` for `.apkg` export
-- Kokoro for lightweight English TTS
-- Fish Speech for multilingual and expressive local TTS
+- Fish Speech as the required TTS engine for all `AudioNatural` generation
 - local image generation through a replaceable adapter
 - no paid API dependency by default
 
@@ -50,10 +49,19 @@ Build one complete path before adding advanced features:
 1. Parse one sentence.
 2. Produce structured English-only linguistic analysis.
 3. Produce a speech plan.
-4. Generate natural audio with a local TTS provider.
+4. Generate real playable `AudioNatural` with Fish Speech. If Fish Speech fails, fail the build instead of exporting a silent deck.
 5. Generate or attach one semantic image.
 6. Build one Anki note and recognition card.
 7. Export a valid `.apkg`.
 8. Add caching and validation.
 
 Voice cloning, large provider matrices, and advanced pronunciation scoring should wait until the end-to-end path is reliable.
+
+
+## Mandatory audio contract
+
+Every pronounceable exported note must contain a real Fish Speech-generated audio file.
+
+The build must fail if Fish Speech is unavailable or audio synthesis fails. Generating only a speech plan, TTS prompt, filename, or pronunciation notes does not satisfy this requirement.
+
+Silent APKG output is considered a failed build.
