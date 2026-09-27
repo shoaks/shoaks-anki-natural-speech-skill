@@ -23,10 +23,10 @@ Speech planner
    |-- intonation
    |
    v
-Local TTS adapter
-   |-- Kokoro
-   |-- Fish Speech
-   |-- optional fallback
+Fish Speech TTS
+   |-- mandatory AudioNatural synthesis
+   |-- optional AudioCareful synthesis
+   |-- no automatic TTS fallback
    |
    +------> AudioNatural
    +------> AudioCareful (optional)
@@ -54,4 +54,6 @@ APKG / CSV + media export
 - Speech planning decides how the same sentence can naturally be realized in speech.
 - TTS realizes the speech plan; it must not invent grammar or meaning.
 - The displayed target remains standard written language unless the user's source itself is nonstandard.
-- Paid services are optional adapters only and must never be silently selected.
+- Fish Speech is mandatory for exported natural audio.
+- Missing or failed Fish Speech synthesis is a build error; do not export a silent deck.
+- Paid services must never be silently selected.
