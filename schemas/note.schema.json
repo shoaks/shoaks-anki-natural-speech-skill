@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Anki Natural Speech Note",
+  "type": "object",
+  "required": ["ID", "Target", "EnglishMeaning", "Language"],
+  "properties": {
+    "ID": {"type": "string", "minLength": 1},
+    "Target": {"type": "string", "minLength": 1},
+    "EnglishMeaning": {"type": "string"},
+    "Image": {"type": ["string", "null"]},
+    "AudioNatural": {"type": ["string", "null"]},
+    "AudioCareful": {"type": ["string", "null"]},
+    "Segmentation": {"type": "array", "items": {"type": "string"}},
+    "Grammar": {"type": "array", "items": {"type": "object"}},
+    "Vocabulary": {"type": "array", "items": {"type": "object"}},
+    "Usage": {"type": "string"},
+    "PronunciationNotes": {"type": "string"},
+    "SpokenForm": {"type": "string"},
+    "Example": {"type": "string"},
+    "Cloze": {"type": "string"},
+    "Tags": {"type": "array", "items": {"type": "string"}},
+    "Source": {"type": "string"},
+    "Language": {"type": "string"},
+    "Difficulty": {"type": "string"},
+    "ImageMode": {"enum": ["generate", "optional", "skip"]}
+  },
+  "additionalProperties": true
+}
