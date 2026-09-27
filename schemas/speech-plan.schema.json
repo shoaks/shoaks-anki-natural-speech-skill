@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Natural Speech Plan",
+  "type": "object",
+  "required": ["language", "mode", "spoken_form"],
+  "properties": {
+    "language": {"type": "string"},
+    "dialect": {"type": ["string", "null"]},
+    "mode": {"enum": ["natural", "careful"]},
+    "register": {"type": "string"},
+    "sentence_type": {"type": "string"},
+    "spoken_form": {"type": "string"},
+    "speech_rate": {"type": "string"},
+    "focus_words": {"type": "array", "items": {"type": "string"}},
+    "pauses": {"type": "array", "items": {"type": "string"}},
+    "linking": {"type": "array", "items": {"type": "string"}},
+    "reductions": {"type": "array", "items": {"type": "string"}},
+    "intonation": {"type": "string"},
+    "emotion": {"type": "string"},
+    "provider_instruction": {"type": "string"}
+  },
+  "additionalProperties": false
+}
