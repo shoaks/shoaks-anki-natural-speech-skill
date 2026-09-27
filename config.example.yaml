@@ -1,0 +1,27 @@
+tts:
+  mode: local
+  providers:
+    english: kokoro
+    multilingual: fish
+    expressive: fish
+  default_audio: natural
+  generate_careful_audio: auto
+  fallback:
+    enabled: true
+
+image:
+  mode: local_preferred
+
+cost_policy:
+  prefer_free: true
+  allow_paid_api: false
+
+export:
+  format: apkg
+  media_audio_format: wav
+  media_image_format: webp
+
+cards:
+  recognition: true
+  cloze: auto
+  production: selective
