@@ -18,11 +18,13 @@ The skill is optimized for contextual language acquisition rather than dictionar
 3. Do not use Chinese in `EnglishMeaning`, `Grammar`, `Vocabulary`, `Usage`, `PronunciationNotes`, or examples' explanations.
 4. Prefer contextual meaning over exhaustive dictionary definitions.
 5. Treat phrases and grammatical constructions as learning units.
-6. Use local models by default. Paid cloud APIs must never be required or silently invoked.
-7. Natural audio should sound like ordinary native conversation, not like slow textbook dictation.
-8. Never create "human-like" audio by randomly dropping sounds. Reductions, linking, contractions, assimilation, elision, rhythm, and stress must be linguistically plausible.
-9. Keep written form, spoken realization, and generated audio as separate layers.
-10. One note may generate multiple Anki cards; do not duplicate the linguistic analysis across separate notes.
+6. Every pronounceable Target MUST have generated audio. Audio is a required deliverable, not an optional enhancement.
+7. Fish Speech is the mandatory TTS engine for `AudioNatural` in this skill. Do not substitute Kokoro, browser TTS, system TTS, cloud TTS, placeholder files, or silent media.
+8. Paid cloud APIs must never be required or silently invoked.
+9. Natural audio should sound like ordinary native conversation, not like slow textbook dictation.
+10. Never create "human-like" audio by randomly dropping sounds. Reductions, linking, contractions, assimilation, elision, rhythm, and stress must be linguistically plausible.
+11. Keep written form, spoken realization, and generated audio as separate layers.
+12. One note may generate multiple Anki cards; do not duplicate the linguistic analysis across separate notes.
 
 ## Inputs
 
@@ -139,16 +141,39 @@ Use `ImageMode`:
 
 Use `skip` for concepts where an image would be misleading, such as many articles, particles, abstract conjunctions, or grammar-only structures.
 
-## Local TTS architecture
+## Mandatory Fish Speech audio
 
-Use a replaceable provider interface. Do not hard-code the deck builder to one model.
+Fish Speech is not a preferred provider; it is a required runtime dependency for audio generation.
 
-Preferred providers:
+For every pronounceable `Target`:
 
-- English: Kokoro when quality is sufficient
-- Multilingual / Spanish / Portuguese: Fish Speech
-- Expressive conversational mode: Fish Speech
-- Optional local fallback: XTTS or another configured local model
+1. Build the speech plan.
+2. Generate `AudioNatural` with Fish Speech.
+3. Verify that the produced audio file exists, is non-empty, and is referenced by the Anki note.
+4. Only then may the note pass validation and be exported.
+
+This applies to:
+
+- single words
+- phrases
+- full sentences
+- generated example sentences when they are exported as separate cards
+
+Do not use Kokoro or another TTS engine as an automatic substitute.
+
+Do not create a successful deck with missing audio.
+
+If Fish Speech is unavailable, missing, fails to initialize, cannot synthesize the target language, or returns an invalid audio file:
+
+**fail the build with a clear actionable error.**
+
+The correct failure mode is:
+
+`Fish Speech unavailable -> build fails -> report setup/runtime error`
+
+The following behavior is forbidden:
+
+`Fish Speech unavailable -> skip audio -> still export deck`
 
 Conceptual interface:
 
@@ -162,6 +187,8 @@ generate_speech(
     output_path,
 )
 ```
+
+The production implementation of this interface must route `AudioNatural` to Fish Speech.
 
 Normal operation must not require a paid API key.
 
@@ -345,21 +372,19 @@ Generate hierarchical tags when useful, for example:
 
 Do not claim an official CEFR level unless reliable evidence supports it. A local heuristic difficulty tag is acceptable if clearly treated as approximate.
 
-## Local-first configuration
+## Required audio configuration
 
 Default policy:
 
 ```yaml
 tts:
   mode: local
-  providers:
-    english: kokoro
-    multilingual: fish
-    expressive: fish
+  provider: fish
+  audio_required: true
   default_audio: natural
   generate_careful_audio: auto
   fallback:
-    enabled: true
+    enabled: false
 
 image:
   mode: local_preferred
@@ -369,11 +394,14 @@ cost_policy:
   allow_paid_api: false
 ```
 
-If the preferred model is unavailable:
+Rules:
 
-1. Try another configured local provider that supports the language.
-2. If no suitable local TTS exists, generate the card without audio and clearly report the missing dependency.
-3. Never silently fall back to a paid service.
+1. `provider: fish` is mandatory for `AudioNatural`.
+2. `audio_required: true` means no note may be exported without a valid Fish Speech audio file.
+3. Automatic fallback to another TTS engine is disabled.
+4. Automatic fallback to paid services is forbidden.
+5. If Fish Speech cannot generate audio, terminate the build and return a clear error with the failed target and setup/runtime cause.
+6. Never downgrade the build to "card without audio".
 
 ## Media caching
 
@@ -433,6 +461,10 @@ Check every note:
 
 ### Audio
 
+- `AudioNatural` is present for every pronounceable Target.
+- The `AudioNatural` file exists and is non-empty.
+- `AudioNatural` was generated by Fish Speech.
+- The Anki card contains a valid `[sound:...]` reference to that file.
 - Audio language matches the target.
 - Audio is semantically faithful to the source.
 - Reductions or omissions are legitimate spoken-language phenomena.
@@ -446,8 +478,9 @@ Check every note:
 Keep V1 deliberately simple:
 
 - Anki package generation: `genanki`
-- English local TTS: Kokoro
-- Multilingual / Spanish / Portuguese local TTS: Fish Speech
+- Required local TTS for all supported languages: Fish Speech
+- `AudioNatural`: mandatory for every pronounceable Target
+- Build behavior on Fish Speech failure: hard failure; do not export a silent deck
 - Primary audio: natural conversational mode
 - Secondary audio: optional careful mode
 - Image generation: local image-generation adapter when configured
@@ -457,3 +490,21 @@ Keep V1 deliberately simple:
 Do not add voice cloning in V1. First make the complete pipeline reliable:
 
 `Input -> linguistic analysis -> speech planning -> local TTS -> image generation -> Anki note generation -> APKG export -> validation`
+
+
+## Audio completion gate
+
+Before reporting the task as complete, verify all of the following for every exported pronounceable note:
+
+- a Fish Speech synthesis call actually ran
+- the resulting audio file exists
+- file size is greater than zero
+- the note's `AudioNatural` field is populated
+- the Anki template references the generated media through `[sound:filename]`
+- the media file is included in the APKG package
+
+A plan, prompt, speech description, filename string, or `TTS Direction` is **not audio generation**.
+
+Do not claim that audio was generated unless an actual playable media file was produced.
+
+If any audio check fails, the overall generation task is failed and must not be reported as successfully completed.
