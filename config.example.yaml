@@ -1,13 +1,11 @@
 tts:
   mode: local
-  providers:
-    english: kokoro
-    multilingual: fish
-    expressive: fish
+  provider: fish
+  audio_required: true
   default_audio: natural
   generate_careful_audio: auto
   fallback:
-    enabled: true
+    enabled: false
 
 image:
   mode: local_preferred
@@ -20,6 +18,11 @@ export:
   format: apkg
   media_audio_format: wav
   media_image_format: webp
+
+validation:
+  require_audio_file: true
+  require_fish_speech: true
+  fail_on_missing_audio: true
 
 cards:
   recognition: true
