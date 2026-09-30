@@ -30,10 +30,11 @@ Speech planner
    |-- rhythm / linking / reductions
    |-- intonation
    v
-Fish Speech TTS
+TTS provider adapter
+   |-- provider: auto or explicit
    |-- mandatory AudioNatural
    |-- optional AudioCareful
-   |-- no automatic TTS fallback
+   |-- configurable fallback chain
    v
 Image adapter
    |-- semantic image when useful
@@ -59,9 +60,9 @@ APKG / CSV + media export
 - Linguistic analysis decides meaning and reusable structure.
 - Every lexical single-word note must contain at least one natural complete example sentence.
 - Speech planning decides how the target is naturally realized in connected speech.
-- Fish Speech realizes the plan and must not invent grammar or meaning.
+- The selected TTS provider realizes the plan and must not invent grammar or meaning.
 - Image generation illustrates semantics and must not reveal the written answer.
-- Missing Fish Speech audio is a build error.
+- Missing valid TTS audio is a build error.
 - Missing single-word `Example` is a build error.
 - Production cards are generated only when the cue constrains the answer sufficiently.
 - Paid services must never be silently selected.
