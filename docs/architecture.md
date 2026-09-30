@@ -5,55 +5,63 @@ User input
    |
    v
 Input parser
-   |
+   |-- preserve exact OriginalInput
+   |-- classify word / phrase / sentence
+   v
+Target normalizer
+   |-- infer intended meaning
+   |-- produce one correct natural Target
+   |-- record correction separately
    v
 Linguistic analyzer
-   |-- EnglishMeaning
-   |-- Segmentation
+   |-- NaturalMeaning
+   |-- Context
+   |-- Chunks
    |-- Grammar
    |-- Vocabulary
    |-- Usage
-   |
+   |-- Example
+   |-- single word => Example is mandatory
    v
 Speech planner
-   |-- SpokenForm
+   |-- Pronunciation
+   |-- NaturalSpeech
    |-- stress / focus
-   |-- rhythm
-   |-- linking / reductions
+   |-- rhythm / linking / reductions
    |-- intonation
-   |
    v
 Fish Speech TTS
-   |-- mandatory AudioNatural synthesis
-   |-- optional AudioCareful synthesis
+   |-- mandatory AudioNatural
+   |-- optional AudioCareful
    |-- no automatic TTS fallback
-   |
-   +------> AudioNatural
-   +------> AudioCareful (optional)
-   |
    v
 Image adapter
-   |
+   |-- semantic image when useful
    v
 Anki note builder
-   |
-   +-- Recognition card
-   +-- Cloze card (selective)
-   +-- Production card (selective)
-   |
+   |-- Comprehension card (default)
+   |-- Listening card (conditional)
+   |-- Production card (selective)
+   |-- Error Correction card (selective)
    v
 Validation
-   |
+   |-- audio/media gate
+   |-- single-word example gate
+   |-- ambiguous production-card gate
    v
 APKG / CSV + media export
 ```
 
 ## Boundary rules
 
-- Linguistic analysis decides what the sentence means.
-- Speech planning decides how the same sentence can naturally be realized in speech.
-- TTS realizes the speech plan; it must not invent grammar or meaning.
-- The displayed target remains standard written language unless the user's source itself is nonstandard.
-- Fish Speech is mandatory for exported natural audio.
-- Missing or failed Fish Speech synthesis is a build error; do not export a silent deck.
+- `OriginalInput` preserves what the learner typed.
+- `Target` is the correct, natural item to learn.
+- Linguistic analysis decides meaning and reusable structure.
+- Every lexical single-word note must contain at least one natural complete example sentence.
+- Speech planning decides how the target is naturally realized in connected speech.
+- Fish Speech realizes the plan and must not invent grammar or meaning.
+- Image generation illustrates semantics and must not reveal the written answer.
+- Missing Fish Speech audio is a build error.
+- Missing single-word `Example` is a build error.
+- Production cards are generated only when the cue constrains the answer sufficiently.
 - Paid services must never be silently selected.
