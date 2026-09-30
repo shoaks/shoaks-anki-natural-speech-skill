@@ -1,11 +1,14 @@
 tts:
-  mode: local
-  provider: fish
+  provider: auto
   audio_required: true
   default_audio: natural
   generate_careful_audio: auto
+  prefer_local: true
+  allow_network: false
+  allow_paid_api: false
   fallback:
-    enabled: false
+    enabled: true
+    providers: []
 
 image:
   mode: local_preferred
@@ -21,7 +24,7 @@ export:
 
 validation:
   require_audio_file: true
-  require_fish_speech: true
+  require_audio_provider: true
   fail_on_missing_audio: true
   require_single_word_example: true
 
