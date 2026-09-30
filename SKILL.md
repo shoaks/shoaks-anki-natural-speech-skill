@@ -13,11 +13,14 @@ The skill is optimized for contextual language acquisition rather than dictionar
 
 ## Non-negotiable rules
 
-1. Preserve the original target-language text in `Target`.
-2. All learner-facing explanations and definitions must be in English only.
+1. Preserve the user's original target-language text exactly in `OriginalInput`.
+2. Put the corrected, natural learning form in `Target`; never silently overwrite the source.
+3. All learner-facing explanations and definitions must be in English only.
 3. Do not use Chinese in `EnglishMeaning`, `Grammar`, `Vocabulary`, `Usage`, `PronunciationNotes`, or examples' explanations.
 4. Prefer contextual meaning over exhaustive dictionary definitions.
-5. Treat phrases and grammatical constructions as learning units.
+5. Treat phrases, collocations, and grammatical constructions as learning units.
+6. For every lexical single-word input, `Example` MUST contain at least one complete, natural target-language example sentence. This is a build requirement, not an optional enrichment.
+7. For a single word, the example must demonstrate a useful common collocation, argument structure, grammatical behavior, or contextual use; reject trivial filler examples.
 6. Every pronounceable Target MUST have generated audio. Audio is a required deliverable, not an optional enhancement.
 7. Fish Speech is the mandatory TTS engine for `AudioNatural` in this skill. Do not substitute Kokoro, browser TTS, system TTS, cloud TTS, placeholder files, or silent media.
 8. Paid cloud APIs must never be required or silently invoked.
@@ -42,39 +45,39 @@ Automatically detect the target language when reliable. If uncertain, preserve t
 
 ## Core note fields
 
-Each note should support:
+Use these learner-facing fields in this order:
 
-- `ID`
-- `Target`
-- `EnglishMeaning`
-- `Image`
-- `AudioNatural`
-- `AudioCareful`
-- `Segmentation`
-- `Grammar`
-- `Vocabulary`
-- `Usage`
-- `PronunciationNotes`
-- `SpokenForm`
-- `Example`
-- `Cloze`
-- `Tags`
-- `Source`
-- `Language`
-- `Difficulty`
-- `ImageMode`
+1. `Target`
+2. `NaturalMeaning`
+3. `Context`
+4. `Chunks`
+5. `Grammar`
+6. `Vocabulary`
+7. `Usage`
+8. `Pronunciation`
+9. `NaturalSpeech`
+10. `Example`
+11. `OriginalInput`
+12. `CorrectionNote`
+13. `AudioNatural`
+14. `Image`
+15. `Tags`
+
+Implementation metadata may additionally include `ID`, `Language`, `Dialect`, `AudioCareful`, `Source`, `Difficulty`, `ImageMode`, and `CardPolicy`.
 
 Use stable IDs so regenerated decks can reuse media and update existing notes predictably.
 
+`OriginalInput` preserves what the learner typed. `Target` is the correct, natural form to learn.
+
 ## Linguistic analysis
 
-### EnglishMeaning
+### NaturalMeaning
 
 Give a natural English meaning. Do not force a literal word-for-word translation when it sounds unnatural.
 
-### Segmentation
+### Chunks
 
-Split sentences into syntactic and semantic chunks, not isolated tokens.
+Split material into syntactic and semantic chunks, collocations, and constructions, not isolated tokens.
 
 Example:
 
@@ -297,67 +300,126 @@ Add notes only when they materially help the learner, for example:
 
 Keep them concise.
 
-## Card generation
+## Card generation — V2
 
-Create one rich note, then derive cards from it.
+Create one rich note, then derive only cards that test distinct retrieval skills.
 
-### Card A: Recognition
+### Card A: Comprehension — default
 
-Front:
-
-- Target
-- Image
-- Natural audio control
-
-Back:
-
-- EnglishMeaning
-- Segmentation
-- Grammar
-- Vocabulary
-- Usage
-- PronunciationNotes
-- optional Careful audio
-
-### Card B: Cloze
-
-Create only when a useful lexical item or construction is worth testing.
-
-Each cloze should test one meaningful retrieval target. Do not blank multiple unrelated elements in one cloze.
-
-### Card C: Production
-
-Optional. Use for high-value phrases, constructions, vocabulary, or common sentences.
+Generate for almost every useful note.
 
 Front:
 
-- Image
-- EnglishMeaning
+- `AudioNatural`
+- `Target`
+- `Image` when useful
+
+Do not show English meaning on the front.
+
+Back order:
+
+1. Target + audio
+2. NaturalMeaning
+3. Chunks
+4. Grammar
+5. Vocabulary
+6. Usage
+7. Pronunciation / NaturalSpeech
+8. Example
+9. OriginalInput / CorrectionNote
+
+### Card B: Listening — conditional
+
+Generate for sentences and useful spoken chunks when listening recognition adds value.
+
+Front:
+
+- `AudioNatural` only
+- optional semantic image
+
+Do not initially display the target text.
 
 Back:
 
 - Target
-- Natural audio
-- PronunciationNotes
+- NaturalMeaning
+- key Chunk
+- Pronunciation / NaturalSpeech
 
-Do not automatically create production cards for every source item; excessive reverse cards increase review load.
+### Card C: Production — selective
 
-## Single-word input
+Generate only when the cue sufficiently constrains the answer and the expression is worth active production.
 
-For a single word include, when relevant:
+Front:
 
-- lemma
+- contextual English cue
+- optional semantic image
+- optional target-language keyword/construction hint
+
+Back:
+
+- Target
+- AudioNatural
+- key pattern
+
+Do not create ambiguous reverse cards such as `beautiful -> bellas`, where several target-language answers may be correct.
+
+### Optional Card D: Personal Error Correction
+
+Create only when:
+
+1. the learner actually made an error
+2. the error is likely to recur
+3. the contrast has learning value
+
+Only this dedicated card type may use the incorrect original form as the front stimulus.
+
+Do not generate correction cards for already-correct input.
+
+Do not automatically create cloze cards. Cloze is disabled by default in V2.
+## Single-word input — hard contract
+
+A single-word note must not degrade into a dictionary-definition card.
+
+For every lexical single-word input include:
+
+- lemma / `Target`
 - part of speech
-- contextual English definition
-- morphology
-- grammatical gender
-- common collocations
-- one natural target-language example
-- image
-- local natural audio
+- contextual English meaning
+- morphology or grammatical gender when relevant
+- at least one useful collocation or construction when available
+- **at least one complete, natural target-language example sentence in `Example`**
+- pronunciation information when useful
+- mandatory Fish Speech audio for the word
+- image when semantically useful
+
+The example sentence is mandatory. Validation must fail when a lexical single-word note has an empty `Example`.
+
+Example-quality rules:
+
+- natural: a native speaker could plausibly say it
+- simple: avoid burying the target under unrelated advanced vocabulary
+- useful: demonstrate the target's common/current sense or construction
+- transferable: teach how the word enters real sentences
+
+Part-of-speech guidance:
+
+- noun: show article/gender when relevant plus a common verb/preposition/collocation
+- verb: show argument structure, required preposition, reflexive behavior, or a common construction
+- adjective: show agreement or a natural noun/copular collocation
+- adverb/conjunction: show normal sentence position or discourse function
+
+Weak example:
+
+`Las legumbres son buenas.`
+
+Better example:
+
+`Como legumbres dos o tres veces por semana.`
 
 Do not add full conjugation or declension tables unless explicitly requested.
 
+If the generated example is exported as its own card, it must also receive valid Fish Speech audio.
 ## Tags
 
 Generate hierarchical tags when useful, for example:
@@ -508,3 +570,13 @@ A plan, prompt, speech description, filename string, or `TTS Direction` is **not
 Do not claim that audio was generated unless an actual playable media file was produced.
 
 If any audio check fails, the overall generation task is failed and must not be reported as successfully completed.
+
+## Card Design V2 reference
+
+The fixed layout, information hierarchy, single-word layout, content limits, dark-mode requirements, and forbidden card patterns are defined in `docs/card-design-v2.md`.
+
+The learning unit is:
+
+`meaningful language pattern + context + sound + transfer`
+
+not `isolated token + dictionary gloss` and not `mistake + correction`.
