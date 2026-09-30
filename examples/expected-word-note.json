@@ -1,0 +1,46 @@
+{
+  "ID": "example_es_word_0001",
+  "Target": "aprovechar",
+  "NaturalMeaning": "to make use of; take advantage of",
+  "Context": "Commonly used when making good use of time, an opportunity, or a resource.",
+  "Chunks": [
+    "aprovechar algo",
+    "aprovechar para + infinitive"
+  ],
+  "Grammar": [
+    {
+      "form": "aprovechar para + infinitive",
+      "function": "use an opportunity or situation to do something",
+      "meaning_in_example": "take the opportunity to rest"
+    }
+  ],
+  "Vocabulary": [],
+  "Usage": "A high-frequency verb used for opportunities, time, resources, and favorable situations.",
+  "Pronunciation": "Stress falls on the final syllable.",
+  "NaturalSpeech": "Inside a sentence, keep the verb inside the surrounding rhythmic group rather than isolating it.",
+  "Example": "Voy a aprovechar el fin de semana para descansar.",
+  "OriginalInput": "aprovechar",
+  "CorrectionNote": "",
+  "AudioNatural": "anki_example_es_word_0001_natural.wav",
+  "AudioCareful": null,
+  "Image": "anki_example_es_word_0001_image.webp",
+  "Tags": [
+    "Spanish::A1-A2",
+    "Vocabulary::Verb",
+    "Chunk::AprovecharPara",
+    "Source::UserInput"
+  ],
+  "Language": "es",
+  "Dialect": "Peninsular Spanish",
+  "Difficulty": "basic",
+  "Source": "UserInput",
+  "ImageMode": "generate",
+  "InputType": "word",
+  "PartOfSpeech": "verb",
+  "CardPolicy": {
+    "comprehension": true,
+    "listening": true,
+    "production": true,
+    "error_correction": false
+  }
+}
