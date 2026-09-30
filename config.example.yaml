@@ -17,11 +17,12 @@ tts:
     max_retries_same_provider: 0
 
 image:
-  mode: local_preferred
+  mode: semantic_optional
 
 cost_policy:
   prefer_free: true
   allow_paid_api: false
+  allow_network: false
 
 export:
   format: apkg
@@ -32,7 +33,7 @@ validation:
   require_audio_file: true
   require_audio_provider: true
   fail_on_missing_audio: true
-  require_single_word_example: true
+  require_example_for_standard_items: true
   require_sound_reference: true
   require_apkg_media_entry: true
   fail_on_empty_media_for_pronounceable_notes: true
@@ -44,11 +45,14 @@ cards:
   error_correction: selective
   cloze: false
 
-single_word:
-  example_required: true
+examples:
+  required_for:
+    - word
+    - phrase
+    - sentence
   min_examples: 1
-  prefer_collocation: true
   require_complete_sentence: true
+  prefer_collocation_or_construction: true
 
 execution:
   preflight_required: true
