@@ -21,7 +21,7 @@ Linguistic analyzer
    |-- Vocabulary
    |-- Usage
    |-- Example
-   |-- single word => Example is mandatory
+   |-- word / phrase / sentence => Example is mandatory
    v
 Speech planner (provider-neutral)
    |-- Pronunciation
