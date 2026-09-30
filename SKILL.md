@@ -69,7 +69,7 @@ Use these learner-facing fields in this order:
 14. `Image`
 15. `Tags`
 
-Implementation metadata may additionally include `ID`, `Language`, `Dialect`, `AudioCareful`, `Source`, `Difficulty`, `ImageMode`, and `CardPolicy`.
+Implementation metadata may additionally include `ID`, `Language`, `Dialect`, `InputType`, `PartOfSpeech`, `AudioProvider`, `AudioModel`, `AudioCareful`, `Source`, `Difficulty`, `ImageMode`, and `CardPolicy`.
 
 Use stable IDs so regenerated decks can reuse media and update existing notes predictably.
 
@@ -211,9 +211,7 @@ When `provider: auto` is used, choose among available providers based on:
 - naturalness appropriate to the requested mode
 - configured cost/network policy
 
-Fish Speech may be one supported provider, but it is not privileged or mandatory.
-
-Examples of provider adapters may include Fish Speech, Kokoro, Piper, or another compatible local/free engine. The architecture must not assume any one of them exists.
+Any compatible engine may be implemented as a provider adapter, but the architecture must not assume that a particular engine exists.
 
 Paid or network TTS must not be silently selected when the configuration forbids it.
 
