@@ -1,11 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Anki Natural Speech Note",
+  "title": "Anki Natural Speech Note V2",
   "type": "object",
   "required": [
     "ID",
     "Target",
-    "EnglishMeaning",
+    "NaturalMeaning",
+    "OriginalInput",
+    "Example",
     "Language",
     "AudioNatural"
   ],
@@ -18,26 +20,13 @@
       "type": "string",
       "minLength": 1
     },
-    "EnglishMeaning": {
+    "NaturalMeaning": {
       "type": "string"
     },
-    "Image": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "Context": {
+      "type": "string"
     },
-    "AudioNatural": {
-      "type": "string",
-      "minLength": 1
-    },
-    "AudioCareful": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "Segmentation": {
+    "Chunks": {
       "type": "array",
       "items": {
         "type": "string"
@@ -58,17 +47,36 @@
     "Usage": {
       "type": "string"
     },
-    "PronunciationNotes": {
+    "Pronunciation": {
       "type": "string"
     },
-    "SpokenForm": {
+    "NaturalSpeech": {
       "type": "string"
     },
     "Example": {
       "type": "string"
     },
-    "Cloze": {
+    "OriginalInput": {
       "type": "string"
+    },
+    "CorrectionNote": {
+      "type": "string"
+    },
+    "AudioNatural": {
+      "type": "string",
+      "minLength": 1
+    },
+    "AudioCareful": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "Image": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "Tags": {
       "type": "array",
@@ -76,13 +84,22 @@
         "type": "string"
       }
     },
-    "Source": {
-      "type": "string"
-    },
     "Language": {
       "type": "string"
     },
+    "Dialect": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "Difficulty": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "Source": {
       "type": "string"
     },
     "ImageMode": {
@@ -91,7 +108,61 @@
         "optional",
         "skip"
       ]
+    },
+    "InputType": {
+      "enum": [
+        "word",
+        "phrase",
+        "sentence",
+        "other"
+      ]
+    },
+    "PartOfSpeech": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "CardPolicy": {
+      "type": "object",
+      "properties": {
+        "comprehension": {
+          "type": "boolean"
+        },
+        "listening": {
+          "type": "boolean"
+        },
+        "production": {
+          "type": "boolean"
+        },
+        "error_correction": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "InputType": {
+            "const": "word"
+          }
+        },
+        "required": [
+          "InputType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "Example": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ],
   "additionalProperties": true
 }
