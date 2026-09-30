@@ -3,7 +3,7 @@
 A local-first Codex skill specification for turning user-provided language material into Anki decks with:
 
 - English-only explanations
-- contextual sentence segmentation
+- contextual chunks, collocations, and constructions
 - grammar and vocabulary analysis
 - semantic images
 - mandatory native-like conversational audio generated through a configurable TTS provider
@@ -33,10 +33,14 @@ The skill therefore uses a speech-planning stage before TTS instead of sending t
 ├── README.md
 ├── config.example.yaml
 ├── docs/
-│   └── architecture.md
+│   ├── architecture.md
+│   ├── card-design-v2.md
+│   ├── codex-execution-contract.md
+│   └── tts-provider-contract.md
 ├── examples/
 │   ├── input.txt
-│   └── expected-note.json
+│   ├── expected-note.json
+│   └── expected-word-note.json
 └── schemas/
     ├── note.schema.json
     └── speech-plan.schema.json
