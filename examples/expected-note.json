@@ -1,11 +1,13 @@
 {
   "ID": "example_es_0001",
   "Target": "Se los voy a devolver la semana que viene.",
-  "EnglishMeaning": "I'm going to return them to you next week.",
-  "Image": "anki_example_es_0001_image.webp",
-  "AudioNatural": "anki_example_es_0001_natural.wav",
-  "AudioCareful": "anki_example_es_0001_careful.wav",
-  "Segmentation": ["Se los", "voy a devolver", "la semana que viene"],
+  "NaturalMeaning": "I'm going to return them to you next week.",
+  "Context": "A neutral way to say that you plan to return several things to someone next week.",
+  "Chunks": [
+    "se los",
+    "voy a devolver",
+    "la semana que viene"
+  ],
   "Grammar": [
     {
       "form": "se + los",
@@ -26,13 +28,31 @@
     }
   ],
   "Usage": "A common neutral way to express a planned future action.",
-  "PronunciationNotes": "Use natural connected speech and avoid over-articulating each word boundary.",
-  "SpokenForm": "Se los voy a devolver la semana que viene.",
+  "Pronunciation": "Keep the pronoun sequence and verb phrase connected rather than isolating every word.",
+  "NaturalSpeech": "The sentence should flow in a few rhythmic groups, with light linking across word boundaries.",
   "Example": "Te lo voy a devolver mañana.",
-  "Cloze": "Se los voy a {{c1::devolver}} la semana que viene.",
-  "Tags": ["Spanish::A1", "Grammar::ObjectPronouns", "Grammar::NearFuture", "Source::UserInput"],
-  "Source": "UserInput",
+  "OriginalInput": "Se los voy a devolver la semana que viene.",
+  "CorrectionNote": "",
+  "AudioNatural": "anki_example_es_0001_natural.wav",
+  "AudioCareful": "anki_example_es_0001_careful.wav",
+  "Image": "anki_example_es_0001_image.webp",
+  "Tags": [
+    "Spanish::A1",
+    "Grammar::ObjectPronouns",
+    "Grammar::NearFuture",
+    "Source::UserInput"
+  ],
   "Language": "es",
+  "Dialect": "Peninsular Spanish",
   "Difficulty": "basic-intermediate",
-  "ImageMode": "generate"
+  "Source": "UserInput",
+  "ImageMode": "generate",
+  "InputType": "sentence",
+  "PartOfSpeech": null,
+  "CardPolicy": {
+    "comprehension": true,
+    "listening": true,
+    "production": false,
+    "error_correction": false
+  }
 }
