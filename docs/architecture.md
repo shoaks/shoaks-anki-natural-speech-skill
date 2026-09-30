@@ -23,15 +23,21 @@ Linguistic analyzer
    |-- Example
    |-- single word => Example is mandatory
    v
-Speech planner
+Speech planner (provider-neutral)
    |-- Pronunciation
    |-- NaturalSpeech
    |-- stress / focus
    |-- rhythm / linking / reductions
    |-- intonation
    v
-TTS provider adapter
+TTS provider registry
+   |-- discover registered adapters
+   |-- cheap availability probe
+   |-- filter by language + policy
    |-- provider: auto or explicit
+   v
+TTS provider adapter
+   |-- actual resolved provider/model
    |-- mandatory AudioNatural
    |-- optional AudioCareful
    |-- configurable fallback chain
@@ -44,6 +50,9 @@ Anki note builder
    |-- Listening card (conditional)
    |-- Production card (selective)
    |-- Error Correction card (selective)
+   v
+Audio validation
+   |-- exists / non-zero / decodable when practical
    v
 Validation
    |-- audio/media gate
@@ -66,3 +75,14 @@ APKG / CSV + media export
 - Missing single-word `Example` is a build error.
 - Production cards are generated only when the cue constrains the answer sufficiently.
 - Paid services must never be silently selected.
+
+## Failure containment
+
+- Core build code must not import a specific TTS engine.
+- Provider-specific code lives behind an adapter.
+- `provider: auto` does not trigger large automatic downloads by default.
+- Full-batch generation starts only after a one-note vertical smoke test passes.
+- A generated audio file that is not referenced and packaged into the APKG is still a failure.
+- An unchanged deterministic failure must not be retried.
+
+See `docs/codex-execution-contract.md`.
