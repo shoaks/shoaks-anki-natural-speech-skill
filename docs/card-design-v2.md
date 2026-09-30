@@ -116,6 +116,8 @@ Required learning path:
 
 Every lexical single-word note must contain at least one complete natural target-language example sentence.
 
+Normal phrase and sentence notes also require at least one new transfer example sentence. Only items explicitly classified as `other` may omit it when sentence use is genuinely inappropriate.
+
 ### Nouns
 
 Show article/gender when relevant and a common verb, preposition, or collocation.
@@ -227,7 +229,7 @@ Use CSS variables:
 - Grammar: normally 1 core transferable pattern
 - Vocabulary: 0–5 useful items
 - Usage: 0–3 short notes
-- Example: at least 1 for single words; normally 1 for other items
+- Example: at least 1 complete natural sentence for normal word, phrase, and sentence notes
 - Pronunciation: only when useful
 
 ## Forbidden patterns
@@ -237,6 +239,7 @@ Use CSS variables:
 - Do not combine two alternative sentences into one Target.
 - Do not repeatedly present an incorrect source form as the main recognition stimulus.
 - Do not claim image/audio completion unless the actual media is packaged in the APKG.
+- Do not export an APKG with an empty media map when pronounceable notes require audio.
 
 ## Recommended generation policy
 
