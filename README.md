@@ -65,3 +65,17 @@ Every pronounceable exported note must contain a real Fish Speech-generated audi
 The build must fail if Fish Speech is unavailable or audio synthesis fails. Generating only a speech plan, TTS prompt, filename, or pronunciation notes does not satisfy this requirement.
 
 Silent APKG output is considered a failed build.
+
+## Card Design V2
+
+The current card specification is documented in `docs/card-design-v2.md`.
+
+Key V2 rules:
+
+- Comprehension is the default card.
+- Listening is generated when spoken recognition adds value.
+- Production is selective and must avoid ambiguous reverse translation.
+- Personal-error correction is selective and never the default learning stimulus.
+- Every lexical single-word note must contain at least one complete natural target-language example sentence.
+- Single-word examples should demonstrate a useful collocation, construction, argument structure, or grammatical behavior.
+- Fish Speech audio remains mandatory for every pronounceable Target.
