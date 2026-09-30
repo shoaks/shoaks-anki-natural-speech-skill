@@ -23,8 +23,17 @@ validation:
   require_audio_file: true
   require_fish_speech: true
   fail_on_missing_audio: true
+  require_single_word_example: true
 
 cards:
-  recognition: true
-  cloze: auto
+  comprehension: true
+  listening: auto
   production: selective
+  error_correction: selective
+  cloze: false
+
+single_word:
+  example_required: true
+  min_examples: 1
+  prefer_collocation: true
+  require_complete_sentence: true
