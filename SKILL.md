@@ -21,7 +21,7 @@ The skill is optimized for contextual language acquisition rather than dictionar
 6. For every lexical single-word input, `Example` MUST contain at least one complete, natural target-language example sentence. This is a build requirement, not an optional enrichment.
 7. For a single word, the example must demonstrate a useful common collocation, argument structure, grammatical behavior, or contextual use; reject trivial filler examples.
 8. Every pronounceable `Target` MUST have generated audio. Audio is a required deliverable, not an optional enhancement.
-9. Fish Speech is the mandatory TTS engine for `AudioNatural`. Do not substitute Kokoro, browser TTS, system TTS, cloud TTS, placeholder files, or silent media.
+9. The TTS engine for `AudioNatural` MUST be configurable. Do not hard-code Fish Speech or any other provider as the only valid engine. The selected provider must actually synthesize playable audio.
 10. Paid cloud APIs must never be required or silently invoked.
 11. Natural audio should sound like ordinary native conversation, not slow textbook dictation.
 12. Never create human-like audio by randomly dropping sounds. Reductions, linking, contractions, assimilation, elision, rhythm, and stress must be linguistically plausible.
@@ -145,39 +145,11 @@ Use `ImageMode`:
 
 Use `skip` for concepts where an image would be misleading, such as many articles, particles, abstract conjunctions, or grammar-only structures.
 
-## Mandatory Fish Speech audio
+## Mandatory audio generation with pluggable TTS
 
-Fish Speech is not a preferred provider; it is a required runtime dependency for audio generation.
+`AudioNatural` is mandatory, but the TTS provider is replaceable.
 
-For every pronounceable `Target`:
-
-1. Build the speech plan.
-2. Generate `AudioNatural` with Fish Speech.
-3. Verify that the produced audio file exists, is non-empty, and is referenced by the Anki note.
-4. Only then may the note pass validation and be exported.
-
-This applies to:
-
-- single words
-- phrases
-- full sentences
-- generated example sentences when they are exported as separate cards
-
-Do not use Kokoro or another TTS engine as an automatic substitute.
-
-Do not create a successful deck with missing audio.
-
-If Fish Speech is unavailable, missing, fails to initialize, cannot synthesize the target language, or returns an invalid audio file:
-
-**fail the build with a clear actionable error.**
-
-The correct failure mode is:
-
-`Fish Speech unavailable -> build fails -> report setup/runtime error`
-
-The following behavior is forbidden:
-
-`Fish Speech unavailable -> skip audio -> still export deck`
+The skill must expose a provider abstraction instead of coupling the build to one engine.
 
 Conceptual interface:
 
@@ -188,14 +160,68 @@ generate_speech(
     voice,
     speech_plan,
     mode,
+    provider,
     output_path,
 )
 ```
 
-The production implementation of this interface must route `AudioNatural` to Fish Speech.
+For every pronounceable `Target`:
 
-Normal operation must not require a paid API key.
+1. Build the speech plan.
+2. Resolve a configured TTS provider.
+3. Synthesize `AudioNatural`.
+4. Verify that the produced audio file exists and is non-empty.
+5. Verify that the Anki note references the file through `[sound:...]`.
+6. Verify that the media file is actually included in the APKG.
+7. Only then may the note pass validation and be exported.
 
+This applies to:
+
+- single words
+- phrases
+- full sentences
+- generated example sentences when exported as separate cards
+
+### Provider selection
+
+The provider may be:
+
+- explicitly selected by the user/configuration; or
+- resolved automatically from installed/available providers.
+
+When `provider: auto` is used, choose among available providers based on:
+
+- target-language support
+- successful runtime availability
+- ability to produce valid audio
+- naturalness appropriate to the requested mode
+- configured cost/network policy
+
+Fish Speech may be one supported provider, but it is not privileged or mandatory.
+
+Examples of provider adapters may include Fish Speech, Kokoro, Piper, or another compatible local/free engine. The architecture must not assume any one of them exists.
+
+Paid or network TTS must not be silently selected when the configuration forbids it.
+
+### Failure behavior
+
+If the selected provider fails and fallback is enabled, try the configured fallback providers in order.
+
+If no allowed provider can produce valid audio:
+
+**fail the build with a clear actionable error.**
+
+Correct failure mode:
+
+`all allowed TTS providers unavailable/failed -> build fails -> report provider/runtime error`
+
+Forbidden behavior:
+
+`TTS fails -> skip audio -> export deck anyway`
+
+A filename string, speech plan, pronunciation note, placeholder, zero-byte file, or missing APKG media entry does not count as generated audio.
+
+Normal operation should prefer free/local providers when configured to do so.
 ## Mandatory speech-planning stage
 
 Sentence audio must use this pipeline:
@@ -392,7 +418,7 @@ For every lexical single-word input include:
 - at least one useful collocation or construction when available
 - **at least one complete, natural target-language example sentence in `Example`**
 - pronunciation information when useful
-- mandatory Fish Speech audio for the word
+- mandatory real TTS audio for the word using the selected/configured provider
 - image when semantically useful
 
 The example sentence is mandatory. Validation must fail when a lexical single-word note has an empty `Example`.
@@ -421,7 +447,7 @@ Better example:
 
 Do not add full conjugation or declension tables unless explicitly requested.
 
-If the generated example is exported as its own card, it must also receive valid Fish Speech audio.
+If the generated example is exported as its own card, it must also receive valid audio from an allowed TTS provider.
 
 ## Tags
 
@@ -443,31 +469,27 @@ Default policy:
 
 ```yaml
 tts:
-  mode: local
-  provider: fish
+  provider: auto
   audio_required: true
   default_audio: natural
   generate_careful_audio: auto
-  fallback:
-    enabled: false
-
-image:
-  mode: local_preferred
-
-cost_policy:
-  prefer_free: true
+  prefer_local: true
+  allow_network: false
   allow_paid_api: false
+  fallback:
+    enabled: true
+    providers: []
 ```
 
 Rules:
 
-1. `provider: fish` is mandatory for `AudioNatural`.
-2. `audio_required: true` means no note may be exported without a valid Fish Speech audio file.
-3. Automatic fallback to another TTS engine is disabled.
-4. Automatic fallback to paid services is forbidden.
-5. If Fish Speech cannot generate audio, terminate the build and return a clear error with the failed target and setup/runtime cause.
-6. Never downgrade the build to "card without audio".
-
+1. `provider: auto` means select an allowed available provider at runtime.
+2. A user/config may explicitly choose a provider; no provider is globally mandatory.
+3. `audio_required: true` means no pronounceable note may be exported without valid audio.
+4. Fallback may be enabled across configured providers.
+5. Network or paid providers may only be used when explicitly permitted.
+6. If all allowed providers fail, terminate the build with a clear error.
+7. Never downgrade the build to a card without audio.
 ## Media caching
 
 Do not regenerate identical media unnecessarily.
@@ -531,7 +553,7 @@ Check every note:
 
 - `AudioNatural` is present for every pronounceable Target.
 - The `AudioNatural` file exists and is non-empty.
-- `AudioNatural` was generated by Fish Speech.
+- `AudioNatural` was generated by an allowed configured TTS provider.
 - The Anki card contains a valid `[sound:...]` reference to that file.
 - Audio language matches the target.
 - Audio is semantically faithful to the source.
@@ -546,25 +568,24 @@ Check every note:
 Keep V1 deliberately simple:
 
 - Anki package generation: `genanki`
-- Required local TTS for all supported languages: Fish Speech
+- TTS: provider adapter with `provider: auto` or explicit provider selection
 - `AudioNatural`: mandatory for every pronounceable Target
-- Build behavior on Fish Speech failure: hard failure; do not export a silent deck
+- Build behavior when all allowed TTS providers fail: hard failure; do not export a silent deck
 - Primary audio: natural conversational mode
 - Secondary audio: optional careful mode
 - Image generation: local image-generation adapter when configured
 - Linguistic analysis: configured LLM that returns English-only structured fields
 - Architecture: provider-based and replaceable
 
-Do not add voice cloning in V1. First make the complete pipeline reliable:
+Do not couple the implementation to one TTS engine. First make the complete pipeline reliable:
 
-`Input -> linguistic analysis -> speech planning -> local TTS -> image generation -> Anki note generation -> APKG export -> validation`
-
+`Input -> linguistic analysis -> speech planning -> TTS provider selection -> audio synthesis -> image generation -> Anki note generation -> APKG export -> validation`
 
 ## Audio completion gate
 
 Before reporting the task as complete, verify all of the following for every exported pronounceable note:
 
-- a Fish Speech synthesis call actually ran
+- a configured TTS synthesis call actually ran
 - the resulting audio file exists
 - file size is greater than zero
 - the note's `AudioNatural` field is populated
