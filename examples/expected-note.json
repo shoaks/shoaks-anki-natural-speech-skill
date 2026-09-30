@@ -54,5 +54,7 @@
     "listening": true,
     "production": false,
     "error_correction": false
-  }
+  },
+  "AudioProvider": "kokoro",
+  "AudioModel": null
 }
