@@ -15,20 +15,21 @@ The skill is optimized for contextual language acquisition rather than dictionar
 
 1. Preserve the user's original target-language text exactly in `OriginalInput`.
 2. Put the corrected, natural learning form in `Target`; never silently overwrite the source.
-3. All learner-facing explanations and definitions must be in English only.
-3. Do not use Chinese in `EnglishMeaning`, `Grammar`, `Vocabulary`, `Usage`, `PronunciationNotes`, or examples' explanations.
+3. All learner-facing explanations, definitions, grammar notes, usage notes, pronunciation notes, and example explanations must be in English only.
 4. Prefer contextual meaning over exhaustive dictionary definitions.
 5. Treat phrases, collocations, and grammatical constructions as learning units.
 6. For every lexical single-word input, `Example` MUST contain at least one complete, natural target-language example sentence. This is a build requirement, not an optional enrichment.
 7. For a single word, the example must demonstrate a useful common collocation, argument structure, grammatical behavior, or contextual use; reject trivial filler examples.
-6. Every pronounceable Target MUST have generated audio. Audio is a required deliverable, not an optional enhancement.
-7. Fish Speech is the mandatory TTS engine for `AudioNatural` in this skill. Do not substitute Kokoro, browser TTS, system TTS, cloud TTS, placeholder files, or silent media.
-8. Paid cloud APIs must never be required or silently invoked.
-9. Natural audio should sound like ordinary native conversation, not like slow textbook dictation.
-10. Never create "human-like" audio by randomly dropping sounds. Reductions, linking, contractions, assimilation, elision, rhythm, and stress must be linguistically plausible.
-11. Keep written form, spoken realization, and generated audio as separate layers.
-12. One note may generate multiple Anki cards; do not duplicate the linguistic analysis across separate notes.
-
+8. Every pronounceable `Target` MUST have generated audio. Audio is a required deliverable, not an optional enhancement.
+9. Fish Speech is the mandatory TTS engine for `AudioNatural`. Do not substitute Kokoro, browser TTS, system TTS, cloud TTS, placeholder files, or silent media.
+10. Paid cloud APIs must never be required or silently invoked.
+11. Natural audio should sound like ordinary native conversation, not slow textbook dictation.
+12. Never create human-like audio by randomly dropping sounds. Reductions, linking, contractions, assimilation, elision, rhythm, and stress must be linguistically plausible.
+13. Keep written form, spoken realization, and generated audio as separate layers.
+14. One note may generate multiple Anki cards, but each card must test a genuinely different retrieval skill.
+15. Do not automatically create production/reverse cards for every note.
+16. Do not use incorrect learner input as the default long-term recognition stimulus.
+17. Do not combine multiple competing answers into one `Target`.
 ## Inputs
 
 Accept:
@@ -223,7 +224,7 @@ The speech planner should determine, when relevant:
 
 Do not fabricate accent features or nonstandard spellings just to make the result sound less robotic.
 
-## WrittenForm vs SpokenForm vs AudioRealization
+## Written form vs NaturalSpeech vs AudioRealization
 
 Always distinguish these concepts.
 
@@ -241,9 +242,9 @@ Audio realization:
 
 A natural native-like question with connected speech, reduced unstressed material, plausible stress, and ordinary conversational intonation.
 
-`SpokenForm` is supporting metadata. It must never overwrite `Target`.
+`NaturalSpeech` is supporting metadata describing connected-speech realization. It must never overwrite `Target`.
 
-Only generate a distinct `SpokenForm` when there is a meaningful and linguistically defensible difference from the written form.
+Only describe a distinct spoken realization when there is a meaningful and linguistically defensible difference from the written form.
 
 ## Natural audio
 
@@ -286,7 +287,7 @@ Characteristics:
 
 Do not automatically generate two audio files for every easy card unless configured to do so.
 
-## Pronunciation notes
+## Pronunciation
 
 Add notes only when they materially help the learner, for example:
 
@@ -377,6 +378,7 @@ Only this dedicated card type may use the incorrect original form as the front s
 Do not generate correction cards for already-correct input.
 
 Do not automatically create cloze cards. Cloze is disabled by default in V2.
+
 ## Single-word input — hard contract
 
 A single-word note must not degrade into a dictionary-definition card.
@@ -420,6 +422,7 @@ Better example:
 Do not add full conjugation or declension tables unless explicitly requested.
 
 If the generated example is exported as its own card, it must also receive valid Fish Speech audio.
+
 ## Tags
 
 Generate hierarchical tags when useful, for example:
@@ -508,12 +511,15 @@ Check every note:
 
 ### Text
 
-- `Target` matches the intended source.
+- `Target` correctly and naturally expresses the intended meaning.
 - Learner-facing explanations contain no Chinese.
-- English meaning is natural.
-- Segmentation follows syntax and meaning.
+- `NaturalMeaning` is natural English.
+- `Chunks` follow syntax, meaning, collocation, and construction boundaries.
 - Grammar explanation matches the actual sentence.
 - Vocabulary definitions reflect contextual meaning.
+- `OriginalInput` preserves the learner's source exactly.
+- For lexical single-word input, `Example` is non-empty, complete, natural, and demonstrates useful usage.
+- Production cards do not rely on highly ambiguous reverse translation.
 
 ### Image
 
