@@ -8,7 +8,7 @@ A local-first Codex skill specification for turning user-provided language mater
 - semantic images
 - mandatory native-like conversational audio generated through a configurable TTS provider
 - optional second careful-pronunciation track
-- recognition, cloze, and production cards
+- comprehension, listening, selective production, and selective personal-error correction cards
 
 ## Design goal
 
@@ -46,16 +46,16 @@ The skill therefore uses a speech-planning stage before TTS instead of sending t
 
 Build one complete path before adding advanced features:
 
-1. Parse one sentence.
+1. Parse one representative item.
 2. Produce structured English-only linguistic analysis.
 3. Produce a speech plan.
 4. Generate real playable `AudioNatural` through an allowed TTS provider. If all allowed providers fail, fail the build instead of exporting a silent deck.
 5. Generate or attach one semantic image.
-6. Build one Anki note and recognition card.
+6. Build one Anki note and Comprehension card.
 7. Export a valid `.apkg`.
 8. Add caching and validation.
 
-Voice cloning, large provider matrices, and advanced pronunciation scoring should wait until the end-to-end path is reliable.
+Do not auto-install or auto-download large TTS models during normal execution. First prove one complete vertical path; advanced provider matrices and voice cloning come later.
 
 
 ## Mandatory audio contract
@@ -79,3 +79,14 @@ Key V2 rules:
 - Every lexical single-word note must contain at least one complete natural target-language example sentence.
 - Single-word examples should demonstrate a useful collocation, construction, argument structure, or grammatical behavior.
 - Real playable TTS audio remains mandatory for every pronounceable Target; the provider itself is configurable.
+
+## Codex fail-fast rule
+
+Before any full batch, Codex must run a one-note vertical smoke test covering real TTS synthesis, APKG export, and APKG media verification.
+If the smoke test fails, stop immediately and report the first actionable blocker. Do not repeatedly retry the same deterministic failure or rebuild the whole deck.
+
+See `docs/codex-execution-contract.md` and `docs/tts-provider-contract.md`.
+
+## Source of truth
+
+`SKILL.md` is normative. Config, schemas, docs, and examples must be kept consistent with it.
