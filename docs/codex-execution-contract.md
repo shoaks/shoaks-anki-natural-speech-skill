@@ -1,6 +1,6 @@
 # Codex Execution Contract
 
-This contract exists to prevent repeated failed attempts, unnecessary model downloads, and full-batch rebuilds before the pipeline is proven.
+This contract exists to prevent repeated failed attempts, unnecessary model downloads, incomplete audio, and full-batch rebuilds before the pipeline is proven.
 
 ## 1. Read before acting
 
@@ -31,24 +31,43 @@ Do not auto-install or auto-download a large TTS model unless explicitly allowed
 
 If no allowed provider is available, stop at preflight and return one concise actionable setup error.
 
-## 3. One-note vertical smoke test
+## 3. Stop before expensive work
 
-Before processing a batch, run exactly one representative note through the complete path:
+Never use expensive work as a diagnostic step.
 
-`analysis -> speech plan -> provider resolve -> synthesize -> audio validate -> note build -> APKG export -> APKG media verify`
+Before any operation that may download a model, install a large dependency, synthesize a full batch, regenerate many media files, or rebuild the whole APKG, verify the immediately preceding prerequisite first.
+
+Required progression:
+
+`inspect -> probe -> one-note vertical test -> batch`
+
+Never use:
+
+`guess -> install/download -> retry unchanged -> full batch`
+
+## 4. One-note vertical smoke test
+
+Before processing a batch, run exactly one representative normal note through the complete path:
+
+`analysis -> generate >=4 examples -> speech plans -> provider resolve -> synthesize Target + every example -> audio validate -> note build -> APKG export -> APKG media verify`
 
 The smoke test passes only if:
 
-- audio synthesis actually ran
-- output file exists and is non-zero
-- final note records the actual provider
-- card contains `[sound:filename]`
-- APKG media contains the same file
-- APKG media map is non-empty
+- the note contains at least 4 valid examples;
+- Target audio synthesis actually ran;
+- every pronounceable example has its own synthesis run and file;
+- every required audio file exists and is non-zero;
+- the final note records the actual provider;
+- every required audio file has a valid `[sound:filename]` reference;
+- APKG media physically contains every required Target/example audio file;
+- post-export verification resolves every sound reference;
+- the APKG media map is non-empty.
+
+For a representative note with exactly four examples, expect at least five verified natural-audio artifacts.
 
 If the smoke test fails, STOP. Do not start the batch.
 
-## 4. Retry budget
+## 5. Retry budget
 
 Defaults:
 
@@ -68,7 +87,7 @@ Examples of deterministic failures:
 
 Do not rerun an unchanged command after a deterministic error.
 
-## 5. Provider behavior
+## 6. Provider behavior
 
 Core code must call the provider abstraction.
 
@@ -78,14 +97,15 @@ Do not:
 - install a provider merely because it appears in an example
 - silently switch to a paid/network service
 - write a fake audio filename when synthesis failed
+- treat Target audio as sufficient when example audio is missing
 
 When `provider: auto`, discover allowed installed adapters and resolve one at runtime.
 
-## 6. Cache behavior
+## 7. Cache behavior
 
 Cache successful media using a stable key including at least:
 
-- target text
+- text
 - language/dialect
 - provider
 - model
@@ -93,30 +113,44 @@ Cache successful media using a stable key including at least:
 - speech-plan version
 - audio mode
 
+Target and example audio use the same cache discipline.
+
 Do not regenerate unchanged successful media or images.
 
-## 7. Batch behavior
+## 8. Batch behavior
 
 Only after smoke test passes:
 
-- process the requested batch
-- reuse cache
-- validate each note
-- package once when practical
-- run final APKG verification
+- process the requested batch;
+- generate at least 4 valid examples for every normal word/phrase/sentence note;
+- synthesize Target and every required example;
+- reuse cache;
+- validate each note;
+- package once when practical;
+- run final APKG verification for every required sound reference.
 
 If one item fails, report the item and stage precisely. Do not rebuild already successful unchanged items unless necessary.
 
-## 8. Scope discipline
+## 9. Packaging invariant
+
+Audio existing on disk is not enough.
+
+Every required Target/example audio file must be copied into the APKG media collection and referenced by `[sound:filename]`.
+
+External paths, URLs, cache-only files, and media left outside the APKG are build failures.
+
+## 10. Scope discipline
 
 When fixing a failure:
 
-- change the smallest relevant layer
-- do not rewrite unrelated templates/schemas
-- do not change card semantics to hide an implementation failure
-- do not relax mandatory validation merely to make the build pass
+- change the smallest relevant layer;
+- do not rewrite unrelated templates/schemas;
+- do not change card semantics to hide an implementation failure;
+- do not reduce the four-example minimum;
+- do not disable example audio;
+- do not relax mandatory validation merely to make the build pass.
 
-## 9. Completion language
+## 11. Completion language
 
 Never say the deck is complete unless the artifact passed final validation.
 
@@ -127,14 +161,18 @@ These do not count as completion:
 - speech plan
 - placeholder
 - JSON field naming a nonexistent file
+- external audio path/URL
 - audio file outside the APKG
-- APKG with empty media for pronounceable notes
+- missing example audio
+- fewer than 4 required examples
+- APKG with unresolved required media
 
-## 10. Failure report
+## 12. Failure report
 
 On stop, report only:
 
 - failed stage
+- affected Target/example
 - exact provider/adapter if relevant
 - first root error
 - whether a retry was attempted

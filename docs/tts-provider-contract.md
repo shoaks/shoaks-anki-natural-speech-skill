@@ -46,6 +46,8 @@ Provider-neutral data:
 - speech-plan guidance
 - output path
 
+The same request abstraction is used for the main Target and for each example sentence.
+
 Do not pass provider-specific command syntax through the core speech-plan schema.
 
 ## AudioArtifact
@@ -61,17 +63,30 @@ Return:
 
 The final note `AudioProvider` must use the actual provider id returned by the adapter.
 
+## Required synthesis set
+
+For every normal pronounceable note, synthesize:
+
+1. the Target;
+2. Example 1;
+3. Example 2;
+4. Example 3;
+5. Example 4;
+6. any additional pronounceable examples.
+
+Every example requires its own audio artifact. One combined recording does not replace the per-example files unless the note also retains individually addressable packaged audio for each example.
+
 ## Auto selection
 
 With `provider: auto`:
 
-1. enumerate registered adapters
-2. call cheap `probe()`
-3. remove providers forbidden by local/network/paid policy
-4. remove providers that do not support the target language/mode
-5. select according to configured preference
-6. synthesize
-7. if allowed, try another provider only after a bounded failure
+1. enumerate registered adapters;
+2. call cheap `probe()`;
+3. remove providers forbidden by local/network/paid policy;
+4. remove providers that do not support the target language/mode;
+5. select according to configured preference;
+6. synthesize;
+7. if allowed, try another provider only after a bounded failure.
 
 No provider name is globally preferred by the skill specification.
 
@@ -94,10 +109,14 @@ Transient runtime failures may receive the configured single retry.
 
 Provider success is not enough.
 
-The build succeeds only when:
+For every required Target/example audio artifact, the build succeeds only when:
 
-- audio artifact exists
-- file is non-zero
-- note references it
-- APKG media includes it
-- post-export verification resolves the reference
+- the artifact exists;
+- the file is non-zero;
+- the note/card references it through `[sound:filename]`;
+- the file is physically included in APKG media;
+- post-export verification resolves the reference.
+
+An external path, URL, cache entry, or file left beside the APKG does not count as packaged audio.
+
+If any required example audio fails this invariant, the whole note/build fails.

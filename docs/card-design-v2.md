@@ -13,82 +13,113 @@ This document defines the fixed Anki card layout and content hierarchy.
 7. Usage
 8. Pronunciation
 9. NaturalSpeech
-10. Example
+10. Examples
 11. OriginalInput
 12. CorrectionNote
 13. AudioNatural
 14. Image
 15. Tags
 
+Each `Examples[]` item contains at least:
+
+- `Text`
+- `AudioNatural`
+
+An optional English `NaturalMeaning` may be added to an example when useful.
+
 ## Core learning sequence
 
-`target language -> comprehension -> sound -> reusable pattern -> transfer`
+`sound -> retrieval -> reveal -> meaning -> reusable pattern -> spoken transfer examples`
 
-The default card must expose correct target-language input, not the learner's mistake.
+The learner should hear first and reveal the written answer second.
 
-## Card A — Comprehension
+## Card A — Listening — default
+
+Generate for every useful pronounceable note.
 
 ### Front
 
 ```text
-┌────────────────────────────┐
-│          AUDIO             │
-│                            │
-│          TARGET            │
-│                            │
-│           IMAGE            │
-└────────────────────────────┘
+┌──────────────────────────────┐
+│ FRONT                        │
+│                              │
+│ 🔊 AudioNatural              │
+│                              │
+│ [optional semantic image]    │
+│                              │
+│ Target is NOT shown          │
+└──────────────────────────────┘
 ```
 
 Rules:
 
-- Target is visually dominant.
+- Audio is the primary cue.
+- Do not display Target or a transcription before reveal.
 - Do not show English meaning.
-- Image is optional when visual meaning is weak.
-- Audio is mandatory for pronounceable targets.
+- Image is optional and must not reveal the written answer.
+- Target audio is mandatory.
 
 ### Back
 
-Use this order:
+```text
+┌──────────────────────────────┐
+│ BACK                         │
+│                              │
+│ Target                       │
+│                              │
+│ NaturalMeaning               │
+│                              │
+│ key chunk / pattern          │
+│                              │
+│ NaturalSpeech information    │
+│                              │
+│ EXAMPLES                     │
+│ 1. sentence 🔊              │
+│ 2. sentence 🔊              │
+│ 3. sentence 🔊              │
+│ 4. sentence 🔊              │
+└──────────────────────────────┘
+```
 
-1. Target + audio
+Back order:
+
+1. Target
 2. NaturalMeaning
-3. Chunks
-4. Grammar
-5. Vocabulary
-6. Usage
-7. Pronunciation / NaturalSpeech
-8. Example
-9. OriginalInput / CorrectionNote
+3. key Chunk / Grammar pattern
+4. Pronunciation / NaturalSpeech when useful
+5. at least 4 Examples, each with its own playable audio
+6. optional Vocabulary / Usage
+7. OriginalInput / CorrectionNote when relevant
 
-Information priority:
+The back may contain more analysis, but it must not bury the core answer under low-value detail.
 
-`Meaning -> Chunk -> Grammar -> Vocabulary -> Usage -> Pronunciation -> Example -> Error history`
+## Card B — Comprehension — optional
 
-## Card B — Listening
+Generate only when seeing the written Target first trains a genuinely different skill.
 
-Front: AudioNatural only; optional semantic image.
+Front may contain:
 
-Do not display target-language text initially.
+- Target
+- optional semantic image
+- optional Target audio replay
 
 Back:
 
-- Target
 - NaturalMeaning
-- key Chunk
-- Pronunciation / NaturalSpeech
+- key pattern
+- selected usage detail
 
-This card trains `sound -> recognition -> meaning`.
+Do not generate this card automatically merely because Target text exists.
 
-## Card C — Production
+## Card C — Production — selective
 
-Generate selectively.
+Generate only when the cue sufficiently constrains the answer.
 
 Front:
 
 - contextual English cue
 - optional semantic image
-- optional target-language keyword/construction hint
+- optional target-language construction hint
 
 Back:
 
@@ -100,80 +131,79 @@ Do not create production cards when many target-language answers are equally val
 
 ## Optional Card D — Personal Error Correction
 
-Generate only for real, useful, likely-to-recur errors.
+Generate only for a real, useful, likely-to-recur learner error.
 
 The front may show the original learner error. The back shows the corrected form plus one short English explanation.
 
 Correct input must never produce a fake correction task.
 
-## Single-word design — mandatory example
+## Examples — hard requirement
+
+Every normal `word`, `phrase`, and `sentence` note requires **at least 4 complete natural target-language example sentences**.
+
+Three or fewer examples is invalid.
+
+Each example must:
+
+1. be natural;
+2. be simple enough to keep the target pattern visible;
+3. be semantically faithful;
+4. add transfer value;
+5. represent a plausible common/current use;
+6. have its own real generated natural-speech audio file.
+
+Do not meet the minimum with trivial near-duplicates.
+
+For a single word, the four examples should collectively demonstrate useful collocations, constructions, argument structure, grammatical behavior, or contextual variation.
+
+## Example audio — hard requirement
+
+Every pronounceable example must have a distinct `AudioNatural` artifact.
+
+Example audio is required even when the example is not exported as a standalone card.
+
+For a normal note with exactly four examples, the minimum natural-audio payload is:
+
+```text
+1 Target audio
+4 Example audio files
+= 5 required audio files
+```
+
+Every required file must:
+
+- actually be synthesized;
+- exist;
+- be non-empty;
+- be referenced by `[sound:filename]`;
+- be physically embedded in APKG media;
+- resolve during post-export package inspection.
+
+External paths, URLs, cache-only files, placeholders, and filename strings do not count.
+
+## Single-word design
 
 A single-word note is not a dictionary card.
 
 Required learning path:
 
-`word -> core meaning -> collocation/construction -> natural sentence -> sound -> image/context`
-
-Every lexical single-word note must contain at least one complete natural target-language example sentence.
-
-Normal phrase and sentence notes also require at least one new transfer example sentence. Only items explicitly classified as `other` may omit it when sentence use is genuinely inappropriate.
+`word sound -> retrieve word -> reveal meaning/pattern -> 4+ spoken examples -> transfer`
 
 ### Nouns
 
-Show article/gender when relevant and a common verb, preposition, or collocation.
-
-Example:
-
-```text
-costa
-the coast
-
-en la costa
-
-Pasamos una semana en la costa.
-```
+Show article/gender when relevant and useful verbs, prepositions, or collocations across the examples.
 
 ### Verbs
 
-Show argument structure or a common construction.
-
-Example:
-
-```text
-aprovechar
-to make use of; take advantage of
-
-aprovechar algo
-aprovechar para + infinitive
-
-Voy a aprovechar el fin de semana para descansar.
-```
+Show argument structure or common constructions across the examples.
 
 ### Adjectives
 
-Show agreement or a natural noun/copular collocation.
+Show agreement or natural noun/copular collocations.
 
 ### Adverbs / conjunctions
 
 Show normal sentence position or discourse function.
-
-## Example quality gate
-
-The example must be:
-
-1. natural;
-2. simple;
-3. semantically faithful;
-4. useful for transfer;
-5. representative of a common/current use.
-
-Reject low-value filler such as:
-
-`Las legumbres son buenas.`
-
-Prefer:
-
-`Como legumbres dos o tres veces por semana.`
 
 ## Typography
 
@@ -229,25 +259,24 @@ Use CSS variables:
 - Grammar: normally 1 core transferable pattern
 - Vocabulary: 0–5 useful items
 - Usage: 0–3 short notes
-- Example: at least 1 complete natural sentence for normal word, phrase, and sentence notes
+- Examples: minimum 4 for normal word/phrase/sentence notes; add more only when they add distinct transfer value
 - Pronunciation: only when useful
 
 ## Forbidden patterns
 
+- Do not reveal Target text on the default Listening card front.
 - Do not create `beautiful -> bellas` without enough context.
 - Do not create `divertido / divertida` as one Target.
-- Do not combine two alternative sentences into one Target.
+- Do not combine two alternative answers into one Target.
 - Do not repeatedly present an incorrect source form as the main recognition stimulus.
-- Do not claim image/audio completion unless the actual media is packaged in the APKG.
-- Do not export an APKG with an empty media map when pronounceable notes require audio.
+- Do not use three or fewer examples for a normal word/phrase/sentence note.
+- Do not leave any required example without real audio.
+- Do not claim image/audio completion unless actual media is packaged in the APKG.
+- Do not satisfy audio requirements with external file paths or URLs.
+- Do not export an APKG whose required Target/example sound references cannot be resolved to packaged media.
 
 ## Recommended generation policy
 
-For about 100 notes, a typical result may be:
+Listening is the default card for each useful pronounceable note.
 
-- 100 Comprehension
-- 60–90 Listening
-- 20–40 Production
-- 10–30 Error Correction
-
-These are not quotas. Every extra card must train a distinct retrieval skill.
+Comprehension, Production, and Error Correction are conditional. They are not quotas. Every extra card must train a distinct retrieval skill.

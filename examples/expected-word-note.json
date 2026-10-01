@@ -11,14 +11,35 @@
     {
       "form": "aprovechar para + infinitive",
       "function": "use an opportunity or situation to do something",
-      "meaning_in_example": "take the opportunity to rest"
+      "meaning_in_example": "take the opportunity to do something"
     }
   ],
   "Vocabulary": [],
   "Usage": "A high-frequency verb used for opportunities, time, resources, and favorable situations.",
   "Pronunciation": "Stress falls on the final syllable.",
   "NaturalSpeech": "Inside a sentence, keep the verb inside the surrounding rhythmic group rather than isolating it.",
-  "Example": "Voy a aprovechar el fin de semana para descansar.",
+  "Examples": [
+    {
+      "Text": "Voy a aprovechar el fin de semana para descansar.",
+      "NaturalMeaning": "I'm going to take advantage of the weekend to rest.",
+      "AudioNatural": "anki_example_es_word_0001_example_01_natural.wav"
+    },
+    {
+      "Text": "Aprovechamos el buen tiempo para salir a caminar.",
+      "NaturalMeaning": "We took advantage of the good weather to go for a walk.",
+      "AudioNatural": "anki_example_es_word_0001_example_02_natural.wav"
+    },
+    {
+      "Text": "Quiero aprovechar esta oportunidad para aprender más.",
+      "NaturalMeaning": "I want to take advantage of this opportunity to learn more.",
+      "AudioNatural": "anki_example_es_word_0001_example_03_natural.wav"
+    },
+    {
+      "Text": "Hay que aprovechar mejor el tiempo.",
+      "NaturalMeaning": "We need to make better use of our time.",
+      "AudioNatural": "anki_example_es_word_0001_example_04_natural.wav"
+    }
+  ],
   "OriginalInput": "aprovechar",
   "CorrectionNote": "",
   "AudioNatural": "anki_example_es_word_0001_natural.wav",
@@ -38,7 +59,7 @@
   "InputType": "word",
   "PartOfSpeech": "verb",
   "CardPolicy": {
-    "comprehension": true,
+    "comprehension": false,
     "listening": true,
     "production": true,
     "error_correction": false

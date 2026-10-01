@@ -7,7 +7,7 @@
     "Target",
     "NaturalMeaning",
     "OriginalInput",
-    "Example",
+    "Examples",
     "Language",
     "InputType",
     "AudioNatural",
@@ -57,8 +57,29 @@
     "NaturalSpeech": {
       "type": "string"
     },
-    "Example": {
-      "type": "string"
+    "Examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "Text",
+          "AudioNatural"
+        ],
+        "properties": {
+          "Text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "NaturalMeaning": {
+            "type": "string"
+          },
+          "AudioNatural": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
     },
     "OriginalInput": {
       "type": "string"
@@ -183,9 +204,9 @@
       },
       "then": {
         "properties": {
-          "Example": {
-            "type": "string",
-            "minLength": 1
+          "Examples": {
+            "type": "array",
+            "minItems": 4
           }
         }
       }

@@ -30,7 +30,28 @@
   "Usage": "A common neutral way to express a planned future action.",
   "Pronunciation": "Keep the pronoun sequence and verb phrase connected rather than isolating every word.",
   "NaturalSpeech": "The sentence should flow in a few rhythmic groups, with light linking across word boundaries.",
-  "Example": "Te lo voy a devolver mañana.",
+  "Examples": [
+    {
+      "Text": "Te lo voy a devolver mañana.",
+      "NaturalMeaning": "I'm going to return it to you tomorrow.",
+      "AudioNatural": "anki_example_es_0001_example_01_natural.wav"
+    },
+    {
+      "Text": "Se las voy a devolver esta tarde.",
+      "NaturalMeaning": "I'm going to return them to you this afternoon.",
+      "AudioNatural": "anki_example_es_0001_example_02_natural.wav"
+    },
+    {
+      "Text": "Voy a devolver los libros el lunes.",
+      "NaturalMeaning": "I'm going to return the books on Monday.",
+      "AudioNatural": "anki_example_es_0001_example_03_natural.wav"
+    },
+    {
+      "Text": "¿Cuándo me vas a devolver las llaves?",
+      "NaturalMeaning": "When are you going to return the keys to me?",
+      "AudioNatural": "anki_example_es_0001_example_04_natural.wav"
+    }
+  ],
   "OriginalInput": "Se los voy a devolver la semana que viene.",
   "CorrectionNote": "",
   "AudioNatural": "anki_example_es_0001_natural.wav",
@@ -50,7 +71,7 @@
   "InputType": "sentence",
   "PartOfSpeech": null,
   "CardPolicy": {
-    "comprehension": true,
+    "comprehension": false,
     "listening": true,
     "production": false,
     "error_correction": false
