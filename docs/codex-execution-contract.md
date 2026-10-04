@@ -1,181 +1,103 @@
-# Codex Execution Contract
+# Codex Execution Contract V3
 
-This contract exists to prevent repeated failed attempts, unnecessary model downloads, incomplete audio, and full-batch rebuilds before the pipeline is proven.
+## 1. Read order
 
-## 1. Read before acting
+Before building, read:
 
-Before coding or building, read:
+1. root `SKILL.md`
+2. `skills/anki-card-format/SKILL.md`
+3. `skills/anki-content-generation/SKILL.md`
+4. `skills/anki-audio-pipeline/SKILL.md`
+5. `skills/anki-deck-builder/SKILL.md`
+6. `schemas/note.schema.json`
+7. active config
 
-1. `SKILL.md`
-2. `config.example.yaml`
-3. `schemas/note.schema.json`
-4. `schemas/speech-plan.schema.json`
-5. this file
+Do not infer card rules from old examples or previous exports.
 
-If they conflict, fix the specification conflict first. Do not implement around contradictory requirements.
+## 2. Preflight
 
-## 2. Preflight first
+Check runtime, package builder, writable paths, allowed TTS adapters, target-language support, network/paid policy, and model-download policy before any batch generation.
 
-Preflight must determine without starting a full build:
+Do not auto-download a large model unless allowed.
 
-- Python/runtime availability
-- `genanki` availability
-- registered TTS adapters
-- which adapters are actually runnable
-- target-language support
-- local/network/paid policy
-- whether large model downloads are allowed
-- writable output/cache paths
+## 3. One-note vertical smoke test
 
-Do not auto-install or auto-download a large TTS model unless explicitly allowed.
+Before a batch, run one representative standard note through:
 
-If no allowed provider is available, stop at preflight and return one concise actionable setup error.
-
-## 3. Stop before expensive work
-
-Never use expensive work as a diagnostic step.
-
-Before any operation that may download a model, install a large dependency, synthesize a full batch, regenerate many media files, or rebuild the whole APKG, verify the immediately preceding prerequisite first.
-
-Required progression:
-
-`inspect -> probe -> one-note vertical test -> batch`
-
-Never use:
-
-`guess -> install/download -> retry unchanged -> full batch`
-
-## 4. One-note vertical smoke test
-
-Before processing a batch, run exactly one representative normal note through the complete path:
-
-`analysis -> generate >=4 examples -> speech plans -> provider resolve -> synthesize Target + every example -> audio validate -> note build -> APKG export -> APKG media verify`
+`content -> schema validation -> Target + 2 example TTS -> audio validation -> render -> APKG export -> media verification`
 
 The smoke test passes only if:
 
-- the note contains at least 4 valid examples;
-- Target audio synthesis actually ran;
-- every pronounceable example has its own synthesis run and file;
-- every required audio file exists and is non-zero;
-- the final note records the actual provider;
-- every required audio file has a valid `[sound:filename]` reference;
-- APKG media physically contains every required Target/example audio file;
-- post-export verification resolves every sound reference;
-- the APKG media map is non-empty.
+- example count is exactly 2;
+- both examples have NaturalMeaning;
+- all lexical example tokens resolve to contextual glosses;
+- Target audio exists and is non-zero;
+- Example 1 audio exists and is non-zero;
+- Example 2 audio exists and is non-zero;
+- front is learner-visible audio only;
+- back follows the fixed hierarchy;
+- all 3 required audio files have valid `[sound:filename]` references;
+- all 3 required audio files are physically present in APKG media;
+- all required sound references resolve post-export.
 
-For a representative note with exactly four examples, expect at least five verified natural-audio artifacts.
+If this fails, stop before the batch.
 
-If the smoke test fails, STOP. Do not start the batch.
+## 4. Retry discipline
 
-## 5. Retry budget
+- deterministic unchanged error: 0 retries;
+- same provider after deterministic failure: 0 retries;
+- transient step: at most 1 retry;
+- total provider attempts: bounded by config.
 
-Defaults:
+Do not use a full batch as a diagnostic.
 
-- same deterministic error: 0 retries
-- same provider after deterministic failure: 0 retries
-- transient step retry: at most 1
-- total provider attempts: bounded by config
+## 5. Scope discipline
 
-Examples of deterministic failures:
+When fixing a failure, change only the owning layer.
 
-- missing executable/module
-- unsupported language
-- invalid configuration
-- permission denied
-- model absent while auto-download is disabled
-- schema mismatch
+Examples:
 
-Do not rerun an unchanged command after a deterministic error.
+- bad meaning/example/gloss -> content skill/layer;
+- TTS failure -> audio skill/layer;
+- tap interaction or layout -> card-format/deck-builder layer;
+- missing packaged media -> deck-builder layer.
 
-## 6. Provider behavior
+Do not alter card semantics to hide an implementation failure.
 
-Core code must call the provider abstraction.
+## 6. Batch behavior
 
-Do not:
+Only after smoke-test success:
 
-- hard-code one TTS engine in core build code
-- install a provider merely because it appears in an example
-- silently switch to a paid/network service
-- write a fake audio filename when synthesis failed
-- treat Target audio as sufficient when example audio is missing
-
-When `provider: auto`, discover allowed installed adapters and resolve one at runtime.
-
-## 7. Cache behavior
-
-Cache successful media using a stable key including at least:
-
-- text
-- language/dialect
-- provider
-- model
-- voice
-- speech-plan version
-- audio mode
-
-Target and example audio use the same cache discipline.
-
-Do not regenerate unchanged successful media or images.
-
-## 8. Batch behavior
-
-Only after smoke test passes:
-
-- process the requested batch;
-- generate at least 4 valid examples for every normal word/phrase/sentence note;
-- synthesize Target and every required example;
-- reuse cache;
-- validate each note;
+- process requested items;
+- generate exactly two validated examples per standard note;
+- synthesize three required audio artifacts per standard note;
+- reuse valid cached audio;
+- render the fixed card;
 - package once when practical;
-- run final APKG verification for every required sound reference.
+- verify every required sound reference after export.
 
-If one item fails, report the item and stage precisely. Do not rebuild already successful unchanged items unless necessary.
+## 7. Completion rule
 
-## 9. Packaging invariant
+Do not claim completion unless the APKG has passed final validation.
 
-Audio existing on disk is not enough.
+These are not completion:
 
-Every required Target/example audio file must be copied into the APKG media collection and referenced by `[sound:filename]`.
+- content JSON only;
+- planned audio filenames;
+- TTS prompts or speech plans;
+- external audio files not embedded in APKG;
+- an APKG with unresolved media;
+- missing tap-gloss coverage;
+- a front containing answer text;
+- any standard note with an example count other than 2.
 
-External paths, URLs, cache-only files, and media left outside the APKG are build failures.
+## 8. Failure report
 
-## 10. Scope discipline
+On failure, report only:
 
-When fixing a failure:
-
-- change the smallest relevant layer;
-- do not rewrite unrelated templates/schemas;
-- do not change card semantics to hide an implementation failure;
-- do not reduce the four-example minimum;
-- do not disable example audio;
-- do not relax mandatory validation merely to make the build pass.
-
-## 11. Completion language
-
-Never say the deck is complete unless the artifact passed final validation.
-
-These do not count as completion:
-
-- planned filename
-- TTS prompt
-- speech plan
-- placeholder
-- JSON field naming a nonexistent file
-- external audio path/URL
-- audio file outside the APKG
-- missing example audio
-- fewer than 4 required examples
-- APKG with unresolved required media
-
-## 12. Failure report
-
-On stop, report only:
-
-- failed stage
-- affected Target/example
-- exact provider/adapter if relevant
-- first root error
-- whether a retry was attempted
-- what is required to proceed
-
-Do not bury the blocker under repeated logs.
+- failed stage;
+- affected Target/example;
+- provider if relevant;
+- first root error;
+- whether a retry occurred;
+- the exact external action required only when Codex cannot perform it itself.
