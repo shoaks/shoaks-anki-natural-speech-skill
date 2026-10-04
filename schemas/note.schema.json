@@ -1,216 +1,114 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Anki Natural Speech Note V2",
+  "title": "Anki Audio-First Note V3",
   "type": "object",
   "required": [
     "ID",
+    "OriginalInput",
     "Target",
     "NaturalMeaning",
-    "OriginalInput",
+    "TargetAudio",
     "Examples",
+    "Chunks",
     "Language",
     "InputType",
-    "AudioNatural",
     "AudioProvider",
     "CardPolicy"
   ],
+  "$defs": {
+    "token": {
+      "type": "object",
+      "required": ["Text", "GlossID", "IsPunctuation"],
+      "properties": {
+        "Text": {"type": "string", "minLength": 1},
+        "GlossID": {"type": ["string", "null"]},
+        "IsPunctuation": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "gloss": {
+      "type": "object",
+      "required": ["ID", "Meaning"],
+      "properties": {
+        "ID": {"type": "string", "minLength": 1},
+        "Meaning": {"type": "string", "minLength": 1},
+        "Lemma": {"type": ["string", "null"]},
+        "PartOfSpeech": {"type": ["string", "null"]},
+        "Note": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "example": {
+      "type": "object",
+      "required": ["Text", "NaturalMeaning", "AudioNatural", "Tokens", "Glosses"],
+      "properties": {
+        "Text": {"type": "string", "minLength": 1},
+        "NaturalMeaning": {"type": "string", "minLength": 1},
+        "AudioNatural": {"type": "string", "minLength": 1},
+        "Tokens": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/token"}
+        },
+        "Glosses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/gloss"}
+        }
+      },
+      "additionalProperties": false
+    }
+  },
   "properties": {
-    "ID": {
-      "type": "string",
-      "minLength": 1
-    },
-    "Target": {
-      "type": "string",
-      "minLength": 1
-    },
-    "NaturalMeaning": {
-      "type": "string",
-      "minLength": 1
-    },
-    "Context": {
-      "type": "string"
+    "ID": {"type": "string", "minLength": 1},
+    "OriginalInput": {"type": "string"},
+    "Target": {"type": "string", "minLength": 1},
+    "NaturalMeaning": {"type": "string", "minLength": 1},
+    "TargetAudio": {"type": "string", "minLength": 1},
+    "Examples": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/example"}
     },
     "Chunks": {
       "type": "array",
       "items": {
-        "type": "string"
-      }
-    },
-    "Grammar": {
-      "type": "array",
-      "items": {
-        "type": "object"
-      }
-    },
-    "Vocabulary": {
-      "type": "array",
-      "items": {
-        "type": "object"
-      }
-    },
-    "Usage": {
-      "type": "string"
-    },
-    "Pronunciation": {
-      "type": "string"
-    },
-    "NaturalSpeech": {
-      "type": "string"
-    },
-    "Examples": {
-      "type": "array",
-      "items": {
         "type": "object",
-        "required": [
-          "Text",
-          "AudioNatural"
-        ],
+        "required": ["Form", "Meaning"],
         "properties": {
-          "Text": {
-            "type": "string",
-            "minLength": 1
-          },
-          "NaturalMeaning": {
-            "type": "string"
-          },
-          "AudioNatural": {
-            "type": "string",
-            "minLength": 1
-          }
+          "Form": {"type": "string", "minLength": 1},
+          "Meaning": {"type": "string", "minLength": 1},
+          "Note": {"type": ["string", "null"]}
         },
         "additionalProperties": false
       }
     },
-    "OriginalInput": {
-      "type": "string"
-    },
-    "CorrectionNote": {
-      "type": "string"
-    },
-    "AudioNatural": {
-      "type": "string",
-      "minLength": 1
-    },
-    "AudioCareful": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "Image": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "Language": {
-      "type": "string"
-    },
-    "Dialect": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "Difficulty": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "Source": {
-      "type": "string"
-    },
-    "ImageMode": {
-      "enum": [
-        "generate",
-        "optional",
-        "skip"
-      ]
-    },
-    "InputType": {
-      "enum": [
-        "word",
-        "phrase",
-        "sentence",
-        "other"
-      ]
-    },
-    "PartOfSpeech": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "CardPolicy": {
-      "type": "object",
-      "properties": {
-        "comprehension": {
-          "type": "boolean"
-        },
-        "listening": {
-          "type": "boolean"
-        },
-        "production": {
-          "type": "boolean"
-        },
-        "error_correction": {
-          "type": "boolean"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "comprehension",
-        "listening",
-        "production",
-        "error_correction"
-      ]
-    },
+    "CorrectionNote": {"type": ["string", "null"]},
+    "Grammar": {"type": ["string", "null"]},
+    "Usage": {"type": ["string", "null"]},
+    "Pronunciation": {"type": ["string", "null"]},
+    "NaturalSpeech": {"type": ["string", "null"]},
+    "Language": {"type": "string", "minLength": 1},
+    "Dialect": {"type": ["string", "null"]},
+    "InputType": {"enum": ["word", "phrase", "sentence", "other"]},
+    "PartOfSpeech": {"type": ["string", "null"]},
+    "Tags": {"type": "array", "items": {"type": "string"}},
+    "Source": {"type": ["string", "null"]},
     "AudioProvider": {
       "type": "string",
       "minLength": 1,
-      "not": {
-        "const": "auto"
-      }
+      "not": {"const": "auto"}
     },
-    "AudioModel": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "AudioModel": {"type": ["string", "null"]},
+    "CardPolicy": {
+      "type": "object",
+      "required": ["listening"],
+      "properties": {
+        "listening": {"const": true}
+      },
+      "additionalProperties": false
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "InputType": {
-            "enum": [
-              "word",
-              "phrase",
-              "sentence"
-            ]
-          }
-        },
-        "required": [
-          "InputType"
-        ]
-      },
-      "then": {
-        "properties": {
-          "Examples": {
-            "type": "array",
-            "minItems": 4
-          }
-        }
-      }
-    }
-  ],
   "additionalProperties": false
 }
