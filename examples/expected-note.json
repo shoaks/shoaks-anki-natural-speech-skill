@@ -1,81 +1,63 @@
 {
   "ID": "example_es_0001",
-  "Target": "Se los voy a devolver la semana que viene.",
-  "NaturalMeaning": "I'm going to return them to you next week.",
-  "Context": "A neutral way to say that you plan to return several things to someone next week.",
-  "Chunks": [
-    "se los",
-    "voy a devolver",
-    "la semana que viene"
-  ],
-  "Grammar": [
-    {
-      "form": "se + los",
-      "function": "indirect-object pronoun followed by a direct-object pronoun",
-      "meaning_in_sentence": "to you + them"
-    },
-    {
-      "form": "ir a + infinitive",
-      "function": "planned or near-future construction",
-      "meaning_in_sentence": "am going to return"
-    }
-  ],
-  "Vocabulary": [
-    {
-      "lemma": "devolver",
-      "part_of_speech": "verb",
-      "definition": "to give or take something back to the person or place it came from"
-    }
-  ],
-  "Usage": "A common neutral way to express a planned future action.",
-  "Pronunciation": "Keep the pronoun sequence and verb phrase connected rather than isolating every word.",
-  "NaturalSpeech": "The sentence should flow in a few rhythmic groups, with light linking across word boundaries.",
+  "OriginalInput": "Déjame pensar.",
+  "Target": "Déjame pensar.",
+  "NaturalMeaning": "Let me think.",
+  "TargetAudio": "anki_example_es_0001_target.wav",
   "Examples": [
     {
-      "Text": "Te lo voy a devolver mañana.",
-      "NaturalMeaning": "I'm going to return it to you tomorrow.",
-      "AudioNatural": "anki_example_es_0001_example_01_natural.wav"
+      "Text": "Déjame pensar un momento.",
+      "NaturalMeaning": "Let me think for a moment.",
+      "AudioNatural": "anki_example_es_0001_example_01.wav",
+      "Tokens": [
+        {"Text": "Déjame", "GlossID": "g1", "IsPunctuation": false},
+        {"Text": "pensar", "GlossID": "g2", "IsPunctuation": false},
+        {"Text": "un", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "momento", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": ".", "GlossID": null, "IsPunctuation": true}
+      ],
+      "Glosses": [
+        {"ID": "g1", "Meaning": "let me", "Lemma": "dejar", "PartOfSpeech": "verb phrase", "Note": "deja + me; commonly followed by an infinitive"},
+        {"ID": "g2", "Meaning": "to think", "Lemma": "pensar", "PartOfSpeech": "verb", "Note": "infinitive"},
+        {"ID": "g3", "Meaning": "a moment", "Lemma": "momento", "PartOfSpeech": "chunk", "Note": "un momento is a common conversational chunk"}
+      ]
     },
     {
-      "Text": "Se las voy a devolver esta tarde.",
-      "NaturalMeaning": "I'm going to return them to you this afternoon.",
-      "AudioNatural": "anki_example_es_0001_example_02_natural.wav"
-    },
-    {
-      "Text": "Voy a devolver los libros el lunes.",
-      "NaturalMeaning": "I'm going to return the books on Monday.",
-      "AudioNatural": "anki_example_es_0001_example_03_natural.wav"
-    },
-    {
-      "Text": "¿Cuándo me vas a devolver las llaves?",
-      "NaturalMeaning": "When are you going to return the keys to me?",
-      "AudioNatural": "anki_example_es_0001_example_04_natural.wav"
+      "Text": "Déjame pensar qué podemos hacer.",
+      "NaturalMeaning": "Let me think about what we can do.",
+      "AudioNatural": "anki_example_es_0001_example_02.wav",
+      "Tokens": [
+        {"Text": "Déjame", "GlossID": "g1", "IsPunctuation": false},
+        {"Text": "pensar", "GlossID": "g2", "IsPunctuation": false},
+        {"Text": "qué", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "podemos", "GlossID": "g4", "IsPunctuation": false},
+        {"Text": "hacer", "GlossID": "g5", "IsPunctuation": false},
+        {"Text": ".", "GlossID": null, "IsPunctuation": true}
+      ],
+      "Glosses": [
+        {"ID": "g1", "Meaning": "let me", "Lemma": "dejar", "PartOfSpeech": "verb phrase", "Note": "deja + me"},
+        {"ID": "g2", "Meaning": "to think", "Lemma": "pensar", "PartOfSpeech": "verb", "Note": "infinitive"},
+        {"ID": "g3", "Meaning": "what", "Lemma": "qué", "PartOfSpeech": "interrogative pronoun", "Note": "introduces an embedded question"},
+        {"ID": "g4", "Meaning": "we can", "Lemma": "poder", "PartOfSpeech": "verb", "Note": "first-person plural present"},
+        {"ID": "g5", "Meaning": "to do", "Lemma": "hacer", "PartOfSpeech": "verb", "Note": "infinitive"}
+      ]
     }
   ],
-  "OriginalInput": "Se los voy a devolver la semana que viene.",
-  "CorrectionNote": "",
-  "AudioNatural": "anki_example_es_0001_natural.wav",
-  "AudioCareful": "anki_example_es_0001_careful.wav",
-  "Image": "anki_example_es_0001_image.webp",
-  "Tags": [
-    "Spanish::A1",
-    "Grammar::ObjectPronouns",
-    "Grammar::NearFuture",
-    "Source::UserInput"
+  "Chunks": [
+    {"Form": "déjame + infinitive", "Meaning": "let me do something", "Note": "common conversational request for time/space to perform an action"}
   ],
+  "CorrectionNote": null,
+  "Grammar": null,
+  "Usage": null,
+  "Pronunciation": "Keep déjame pensar connected as one natural rhythmic group.",
+  "NaturalSpeech": "Use ordinary conversational rhythm without inserting pauses between every word.",
   "Language": "es",
   "Dialect": "Peninsular Spanish",
-  "Difficulty": "basic-intermediate",
-  "Source": "UserInput",
-  "ImageMode": "generate",
   "InputType": "sentence",
   "PartOfSpeech": null,
-  "CardPolicy": {
-    "comprehension": false,
-    "listening": true,
-    "production": false,
-    "error_correction": false
-  },
+  "Tags": ["Spanish::Conversation", "Chunk::DejameInfinitive"],
+  "Source": "UserInput",
   "AudioProvider": "example-provider",
-  "AudioModel": null
+  "AudioModel": null,
+  "CardPolicy": {"listening": true}
 }
