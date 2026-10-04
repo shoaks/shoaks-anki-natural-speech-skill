@@ -1,6 +1,7 @@
 # TTS Provider Contract
 
-The core skill is provider-neutral.
+The authoritative audio behavior is defined by `skills/anki-audio-pipeline/SKILL.md`.
+This document defines provider-adapter mechanics only.
 
 ## Adapter interface
 
@@ -22,7 +23,7 @@ class TTSProvider:
 
 ## ProviderStatus
 
-Should indicate:
+Report:
 
 - available / unavailable
 - reason
@@ -32,7 +33,7 @@ Should indicate:
 - model readiness
 - whether a large download would be required
 
-`probe()` should be cheap and must not download large models.
+`probe()` must be cheap and must not download large models.
 
 ## SynthesisRequest
 
@@ -42,13 +43,11 @@ Provider-neutral data:
 - language
 - dialect
 - voice preference
-- mode: natural / careful
+- mode
 - speech-plan guidance
 - output path
 
-The same request abstraction is used for the main Target and for each example sentence.
-
-Do not pass provider-specific command syntax through the core speech-plan schema.
+Do not leak provider-specific command syntax into the core speech-plan schema.
 
 ## AudioArtifact
 
@@ -57,24 +56,23 @@ Return:
 - actual provider id
 - actual model id/name when known
 - output file path
+- stable media filename
 - format
 - duration when available
 - validation status
 
-The final note `AudioProvider` must use the actual provider id returned by the adapter.
+The final note `AudioProvider` records the actual resolved provider id.
 
 ## Required synthesis set
 
-For every normal pronounceable note, synthesize:
+For every standard pronounceable note, synthesize exactly the three required source texts supplied by the content layer:
 
-1. the Target;
-2. Example 1;
-3. Example 2;
-4. Example 3;
-5. Example 4;
-6. any additional pronounceable examples.
+1. Target
+2. Example 1
+3. Example 2
 
-Every example requires its own audio artifact. One combined recording does not replace the per-example files unless the note also retains individually addressable packaged audio for each example.
+Each requires an independent playable artifact.
+The provider layer must not invent, remove, merge, or rewrite these texts.
 
 ## Auto selection
 
@@ -82,13 +80,13 @@ With `provider: auto`:
 
 1. enumerate registered adapters;
 2. call cheap `probe()`;
-3. remove providers forbidden by local/network/paid policy;
-4. remove providers that do not support the target language/mode;
+3. exclude providers forbidden by local/network/paid policy;
+4. exclude unsupported language/mode providers;
 5. select according to configured preference;
 6. synthesize;
 7. if allowed, try another provider only after a bounded failure.
 
-No provider name is globally preferred by the skill specification.
+No provider name is globally mandatory.
 
 ## Failure categories
 
@@ -103,20 +101,9 @@ Treat these as deterministic unless evidence says otherwise:
 
 Do not repeatedly retry deterministic failures.
 
-Transient runtime failures may receive the configured single retry.
+## Packaging boundary
 
-## Packaging invariant
+Provider success means only that valid local audio artifacts exist.
+The `anki-deck-builder` skill owns `[sound:filename]` creation, APKG media embedding, and post-export resolution checks.
 
-Provider success is not enough.
-
-For every required Target/example audio artifact, the build succeeds only when:
-
-- the artifact exists;
-- the file is non-zero;
-- the note/card references it through `[sound:filename]`;
-- the file is physically included in APKG media;
-- post-export verification resolves the reference.
-
-An external path, URL, cache entry, or file left beside the APKG does not count as packaged audio.
-
-If any required example audio fails this invariant, the whole note/build fails.
+A standard note is incomplete unless all three validated audio artifacts are ultimately packaged and resolved inside the APKG.
