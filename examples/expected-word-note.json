@@ -1,69 +1,71 @@
 {
   "ID": "example_es_word_0001",
+  "OriginalInput": "aprovechar",
   "Target": "aprovechar",
-  "NaturalMeaning": "to make use of; take advantage of",
-  "Context": "Commonly used when making good use of time, an opportunity, or a resource.",
-  "Chunks": [
-    "aprovechar algo",
-    "aprovechar para + infinitive"
-  ],
-  "Grammar": [
-    {
-      "form": "aprovechar para + infinitive",
-      "function": "use an opportunity or situation to do something",
-      "meaning_in_example": "take the opportunity to do something"
-    }
-  ],
-  "Vocabulary": [],
-  "Usage": "A high-frequency verb used for opportunities, time, resources, and favorable situations.",
-  "Pronunciation": "Stress falls on the final syllable.",
-  "NaturalSpeech": "Inside a sentence, keep the verb inside the surrounding rhythmic group rather than isolating it.",
+  "NaturalMeaning": "to make good use of; to take advantage of",
+  "TargetAudio": "anki_example_es_word_0001_target.wav",
   "Examples": [
     {
       "Text": "Voy a aprovechar el fin de semana para descansar.",
       "NaturalMeaning": "I'm going to take advantage of the weekend to rest.",
-      "AudioNatural": "anki_example_es_word_0001_example_01_natural.wav"
+      "AudioNatural": "anki_example_es_word_0001_example_01.wav",
+      "Tokens": [
+        {"Text": "Voy", "GlossID": "g1", "IsPunctuation": false},
+        {"Text": "a", "GlossID": "g1", "IsPunctuation": false},
+        {"Text": "aprovechar", "GlossID": "g2", "IsPunctuation": false},
+        {"Text": "el", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "fin", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "de", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "semana", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "para", "GlossID": "g4", "IsPunctuation": false},
+        {"Text": "descansar", "GlossID": "g4", "IsPunctuation": false},
+        {"Text": ".", "GlossID": null, "IsPunctuation": true}
+      ],
+      "Glosses": [
+        {"ID": "g1", "Meaning": "I'm going to", "Lemma": "ir", "PartOfSpeech": "construction", "Note": "ir a + infinitive expresses a planned/near-future action"},
+        {"ID": "g2", "Meaning": "to make good use of", "Lemma": "aprovechar", "PartOfSpeech": "verb", "Note": "here: make use of the available weekend"},
+        {"ID": "g3", "Meaning": "the weekend", "Lemma": "fin de semana", "PartOfSpeech": "noun phrase", "Note": "fixed expression"},
+        {"ID": "g4", "Meaning": "in order to rest", "Lemma": "para descansar", "PartOfSpeech": "purpose phrase", "Note": "para + infinitive expresses purpose"}
+      ]
     },
     {
       "Text": "Aprovechamos el buen tiempo para salir a caminar.",
       "NaturalMeaning": "We took advantage of the good weather to go for a walk.",
-      "AudioNatural": "anki_example_es_word_0001_example_02_natural.wav"
-    },
-    {
-      "Text": "Quiero aprovechar esta oportunidad para aprender más.",
-      "NaturalMeaning": "I want to take advantage of this opportunity to learn more.",
-      "AudioNatural": "anki_example_es_word_0001_example_03_natural.wav"
-    },
-    {
-      "Text": "Hay que aprovechar mejor el tiempo.",
-      "NaturalMeaning": "We need to make better use of our time.",
-      "AudioNatural": "anki_example_es_word_0001_example_04_natural.wav"
+      "AudioNatural": "anki_example_es_word_0001_example_02.wav",
+      "Tokens": [
+        {"Text": "Aprovechamos", "GlossID": "g1", "IsPunctuation": false},
+        {"Text": "el", "GlossID": "g2", "IsPunctuation": false},
+        {"Text": "buen", "GlossID": "g2", "IsPunctuation": false},
+        {"Text": "tiempo", "GlossID": "g2", "IsPunctuation": false},
+        {"Text": "para", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "salir", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "a", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": "caminar", "GlossID": "g3", "IsPunctuation": false},
+        {"Text": ".", "GlossID": null, "IsPunctuation": true}
+      ],
+      "Glosses": [
+        {"ID": "g1", "Meaning": "we took advantage of", "Lemma": "aprovechar", "PartOfSpeech": "verb", "Note": "first-person plural preterite/present form depending context; here understood as a completed action"},
+        {"ID": "g2", "Meaning": "the good weather", "Lemma": "buen tiempo", "PartOfSpeech": "noun phrase", "Note": "common collocation"},
+        {"ID": "g3", "Meaning": "to go out for a walk", "Lemma": "salir a caminar", "PartOfSpeech": "verb phrase", "Note": "para + infinitive gives purpose"}
+      ]
     }
   ],
-  "OriginalInput": "aprovechar",
-  "CorrectionNote": "",
-  "AudioNatural": "anki_example_es_word_0001_natural.wav",
-  "AudioCareful": null,
-  "Image": "anki_example_es_word_0001_image.webp",
-  "Tags": [
-    "Spanish::A1-A2",
-    "Vocabulary::Verb",
-    "Chunk::AprovecharPara",
-    "Source::UserInput"
+  "Chunks": [
+    {"Form": "aprovechar algo", "Meaning": "to make good use of something", "Note": null},
+    {"Form": "aprovechar para + infinitive", "Meaning": "to take the opportunity to do something", "Note": null}
   ],
+  "CorrectionNote": null,
+  "Grammar": null,
+  "Usage": "Common with time, opportunities, favorable conditions, and useful resources.",
+  "Pronunciation": null,
+  "NaturalSpeech": null,
   "Language": "es",
   "Dialect": "Peninsular Spanish",
-  "Difficulty": "basic",
-  "Source": "UserInput",
-  "ImageMode": "generate",
   "InputType": "word",
   "PartOfSpeech": "verb",
-  "CardPolicy": {
-    "comprehension": false,
-    "listening": true,
-    "production": true,
-    "error_correction": false
-  },
+  "Tags": ["Spanish::Vocabulary", "Verb::Aprovechar"],
+  "Source": "UserInput",
   "AudioProvider": "example-provider",
-  "AudioModel": null
+  "AudioModel": null,
+  "CardPolicy": {"listening": true}
 }
