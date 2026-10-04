@@ -2,9 +2,6 @@ tts:
   provider: auto
   audio_required: true
   example_audio_required: true
-  embed_required_audio_in_apkg: true
-  default_audio: natural
-  generate_careful_audio: auto
   prefer_local: true
   allow_network: false
   allow_paid_api: false
@@ -18,57 +15,44 @@ tts:
     max_provider_attempts: 3
     max_retries_same_provider: 0
 
-image:
-  mode: semantic_optional
+cards:
+  default_type: listening
+  front_audio_only: true
+  show_target_on_front: false
+  show_meaning_on_front: false
+  show_image_on_front: false
+  examples_exact: 2
+  tappable_contextual_glosses: true
+  no_external_dictionary_by_default: true
+  javascript_progressive_enhancement: true
 
-cost_policy:
-  prefer_free: true
-  allow_paid_api: false
-  allow_network: false
+content:
+  explanations_language: en
+  preserve_original_input: true
+  examples_exact: 2
+  reject_trivial_near_duplicates: true
+  require_natural_example_meaning: true
+  require_gloss_for_every_lexical_token: true
+  prefer_chunk_glosses: true
 
 export:
   format: apkg
   media_audio_format: wav
-  media_image_format: webp
+  embed_required_audio_in_apkg: true
 
 validation:
-  require_audio_file: true
-  require_example_audio_file: true
-  require_audio_provider: true
-  fail_on_missing_audio: true
-  require_examples_for_standard_items: true
-  min_examples_for_standard_items: 4
-  require_complete_example_sentence: true
+  require_target_audio: true
+  require_example_audio: true
+  required_audio_count_per_standard_note: 3
   require_sound_reference: true
   require_apkg_media_entry: true
-  require_all_example_audio_in_apkg: true
-  fail_on_unresolved_sound_reference: true
-  fail_on_empty_media_for_pronounceable_notes: true
-
-cards:
-  listening: true
-  comprehension: false
-  production: selective
-  error_correction: selective
-  cloze: false
-  default_front:
-    show_audio: true
-    show_image: optional
-    show_target: false
-    show_meaning: false
-
-examples:
-  required_for:
-    - word
-    - phrase
-    - sentence
-  min_examples: 4
-  require_complete_sentence: true
-  require_audio_per_example: true
-  require_distinct_audio_file_per_example: true
-  require_apkg_embedding: true
-  prefer_collocation_or_construction: true
-  reject_trivial_near_duplicates: true
+  require_all_sound_references_resolved: true
+  require_front_audio_only: true
+  require_exact_examples: 2
+  require_example_meaning: true
+  require_lexical_gloss_coverage: true
+  fail_on_missing_audio: true
+  fail_on_template_contract_violation: true
 
 execution:
   preflight_required: true
@@ -79,12 +63,12 @@ execution:
   smoke_test:
     enabled: true
     note_count: 1
-    require_min_examples: 4
+    require_exact_examples: 2
     require_target_audio: true
     require_all_example_audio: true
+    require_gloss_coverage: true
     require_apkg_export: true
     require_apkg_media_check: true
-    require_all_sound_references_resolved: true
     stop_batch_on_failure: true
   batch:
     start_only_after_smoke_pass: true
